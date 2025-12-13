@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zero Proxy</title>
+    <link id="dynamic-favicon" rel="icon" type="image/x-icon" href="">
+    
+    <style>
+        /* --- CORE VISUALS & FONTS --- */
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap');
+
+        :root {
+            --bg-color: #050505;
+            --surface: #0f0f0f;
+            --surface-hover: #161616;
+            --border: #262626;
+            --accent: #fff;
+            --text-main: #f0f0f0;
+            --text-dim: #777;
+            --radius-lg: 32px;
+            --radius-md: 20px;
+            --panic-color: #ff4d4d;
+            
+            /* Dynamic Variables */
+            --blur-amount: 10px;
+            --transition-speed: 0.3s;
+            --shadow-opacity: 0.6;
+        }
+
+        /* POWER SAVING OVERRIDES */
+        body.power-saving {
+            --blur-amount: 0px;
+            --transition-speed: 0s;
+            --shadow-opacity: 0;
+            background-image: none !important;
+            background-color: #000 !important;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- ICONS --- */
+        .icon {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            z-index: 1000;
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(var(--blur-amount));
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: all var(--transition-speed);
+        }
+
+        .brand-pill {
+            background: var(--surface);
+            padding: 10px 24px;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: -0.02em;
+            color: #fff;
+        }
+
+        .nav-center {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .nav-pill {
+            background: var(--surface);
+            padding: 6px;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            display: flex;
+            gap: 5px;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            cursor: pointer;
+            border-radius: 40px;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition-speed) ease;
+        }
+
+        .nav-btn:hover {
+            color: #fff;
+            background: var(--surface-hover);
+        }
+
+        .nav-btn.active {
+            background: #fff;
+            color: #000;
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .panic-btn {
+            background: #2a0b0b;
+            color: var(--panic-color);
+            border: 1px solid #4a1b1b;
+            padding: 10px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition-speed) ease;
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panic-btn:hover {
+            background: var(--panic-color);
+            color: #fff;
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(255, 77, 77, 0.4);
+        }
+
+        /* --- CONTENT WRAPPER --- */
+        main {
+            flex: 1;
+            position: relative;
+            margin: 20px 40px;
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        .tab-content {
+            width: 100%;
+            height: 100%;
+            display: none;
+            opacity: 0;
+            animation: fadeIn 0.4s ease forwards;
+            padding: 40px;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+        }
+
+        .tab-content.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* --- BROWSER / HOME --- */
+        .center-wrapper {
+            width: 100%;
+            max-width: 680px;
+            margin-top: 15vh;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+            letter-spacing: -2px;
+            color: #ffffff;
+        }
+
+        .search-bar {
+            position: relative;
+            width: 100%;
+            transition: var(--transition-speed);
+        }
+
+        .url-input {
+            width: 100%;
+            padding: 22px 25px;
+            padding-left: 60px;
+            background: #080808;
+            border: 1px solid var(--border);
+            border-radius: 60px;
+            color: #fff;
+            font-size: 1.1rem;
+            outline: none;
+            transition: var(--transition-speed);
+        }
+
+        .url-input:focus {
+            border-color: #555;
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.05);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
+            pointer-events: none;
+            width: 22px;
+            height: 22px;
+        }
+
+        /* --- PROXY FRAME --- */
+        #proxy-container {
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 2000;
+        }
+
+        .proxy-toolbar {
+            height: 56px;
+            background: #f4f4f4;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 15px;
+        }
+
+        .proxy-url-display {
+            flex: 1;
+            background: #fff;
+            border: 1px solid #d1d1d1;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            color: #333;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            font-weight: 500;
+        }
+
+        .toolbar-btn {
+            padding: 8px;
+            border-radius: 10px;
+            cursor: pointer;
+            color: #444;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .toolbar-btn:hover { background: #e0e0e0; color: #000; }
+
+        #render-area {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+            position: relative;
+        }
+
+        /* --- GAMES GRID --- */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1100px;
+            margin-top: 20px;
+        }
+
+        .game-card {
+            background: #1a1a1a;
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition-speed);
+            position: relative;
+            aspect-ratio: 16/9;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            border-color: #555;
+            box-shadow: 0 10px 40px rgba(0,0,0,var(--shadow-opacity));
+        }
+
+        .game-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .game-card:hover .game-img {
+            transform: scale(1.05);
+        }
+
+        .game-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(0deg, rgba(0,0,0,0.95), transparent);
+            color: white;
+            font-weight: 600;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+        }
+
+        .play-tag {
+            font-size: 0.7rem;
+            background: white;
+            color: black;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- SETTINGS --- */
+        .settings-card {
+            background: #080808;
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 35px;
+            width: 100%;
+            max-width: 550px;
+            margin-top: 40px;
+        }
+
+        .setting-section {
+            border-bottom: 1px solid #1a1a1a;
+            padding-bottom: 25px;
+            margin-bottom: 25px;
+        }
+        .setting-section:last-child { border: none; padding: 0; margin: 0; }
+
+        .setting-header {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        select, input[type="text"] {
+            background: #1a1a1a;
+            color: white;
+            border: 1px solid #333;
+            padding: 10px 16px;
+            border-radius: 12px;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #555;
+        }
+
+        .input-mini {
+            width: 120px;
+            text-align: center;
+        }
+
+        /* Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+        .switch input { display:none; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #222;
+            transition: .4s;
+            border-radius: 34px;
+            border: 1px solid #333;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px; width: 20px;
+            left: 3px; bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider { background-color: #fff; }
+        input:checked + .slider:before { 
+            transform: translateX(22px); 
+            background-color: #000;
+        }
+
+        .cloak-btn {
+            background: #fff;
+            color: #000;
+            border: none;
+            width: 100%;
+            padding: 16px;
+            border-radius: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .cloak-btn:hover { opacity: 0.9; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="brand-pill">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            Zero Proxy <span style="font-weight:300; opacity:0.5; font-size:0.8rem; margin-left:5px;">v7.5</span>
+        </div>
+
+        <div class="nav-center">
+            <div class="nav-pill">
+                <div class="nav-btn active" onclick="switchTab('home', this)">
+                    <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    Browse
+                </div>
+                <div class="nav-btn" onclick="switchTab('games', this)">
+                    <svg class="icon" viewBox="0 0 24 24"><polygon points="5 3 19 3 12 22 5 3"></polygon></svg>
+                    Library
+                </div>
+                <div class="nav-btn" onclick="switchTab('settings', this)">
+                    <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    Setup
+                </div>
+            </div>
+        </div>
+
+        <button class="panic-btn" onclick="triggerPanic()">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg>
+            Panic
+        </button>
+    </nav>
+
+    <main>
+        
+        <!-- HOME TAB -->
+        <div id="home" class="tab-content active">
+            <div class="center-wrapper">
+                <h1>Surf Unfiltered.</h1>
+                <div class="search-bar">
+                    <svg class="icon search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" id="urlInput" class="url-input" placeholder="Type URL or search query..." autocomplete="off">
+                </div>
+                <div style="margin-top:20px; color:#555; font-size:0.8rem;">
+                    Recursive HTML Injection Active
+                </div>
+            </div>
+        </div>
+
+        <!-- GAMES TAB -->
+        <div id="games" class="tab-content">
+            <div style="width:100%; max-width:1100px; margin-bottom:20px; padding-left: 10px;">
+                <h2>Unblocked Library</h2>
+            </div>
+            
+            <div class="games-grid">
+                <!-- Game 1: Eaglercraft -->
+                <div class="game-card" onclick="launchDirect('https://eaglercraft.com/play/?version=1.8.8-wasm')">
+                    <img src="https://assets.nintendo.com/image/upload/ar_16:9,c_lpad,w_1240/b_white/f_auto/q_auto/store/software/switch/70010000000964/a28a81253e919298beab2295e39a56b7a5140ef15abdb56135655e5c221b2a3a" class="game-img" alt="Minecraft">
+                    <div class="game-overlay">
+                        <span>Eaglercraft 1.8</span>
+                        <div class="play-tag">NATIVE</div>
+                    </div>
+                </div>
+
+                <!-- Game 2: Eaglercraft OFFLINE -->
+                <div class="game-card" onclick="launchDirect('https://gleeful-dasik-5e1bc1.netlify.app/')">
+                    <img src="https://www.minecraft.net/content/dam/minecraftnet/franchise/experiments/1182385_PDPRedesign/Gallery/PDP-Gallery_OV_6_16x9.jpg" class="game-img" alt="Eaglercraft Offline">
+                    <div class="game-overlay">
+                        <span>Eaglercraft Offline</span>
+                        <div class="play-tag">NATIVE</div>
+                    </div>
+                </div>
+
+                <!-- Game 3: Tomb of the Mask -->
+                <div class="game-card" onclick="launchDirect('https://venerable-yeot-6fe4ac.netlify.app/')">
+                    <img src="https://play-lh.googleusercontent.com/ATGr-U4JBK2VjFzKGK9eMMkrDxJaazadOUoz_7Yl0U5NrWSFcFUzEtNurWXYzVWc8uOO" class="game-img" alt="Tomb of the Mask">
+                    <div class="game-overlay">
+                        <span>Tomb of the Mask</span>
+                        <div class="play-tag">NATIVE</div>
+                    </div>
+                </div>
+
+                <!-- Game 4: Among Us -->
+                <div class="game-card" onclick="launchDirect('https://amongusplay.online/')">
+                    <img src="https://assets.nintendo.com/image/upload/ar_16:9,c_lpad,w_1240/b_white/f_auto/q_auto/store/software/switch/70010000036098/758ab0b61205081da2466386940752c70e0e5ea43bd39e8b9b13eaa455c69b7e" class="game-img" alt="Among Us">
+                    <div class="game-overlay">
+                        <span>Among Us (Clone)</span>
+                        <div class="play-tag">NATIVE</div>
+                    </div>
+                </div>
+
+                <!-- Game 5: Hollow Knight -->
+                <div class="game-card" onclick="launchDirect('https://zapgames.io/hollow-knight')">
+                    <img src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/367520/capsule_616x353.jpg?t=1764916620" class="game-img" alt="Hollow Knight">
+                    <div class="game-overlay">
+                        <span>Hollow Knight</span>
+                        <div class="play-tag">NATIVE</div>
+                    </div>
+                </div>
+
+                <!-- Game 6: Slope -->
+                <div class="game-card" onclick="launchDirect('https://mathadventure1.github.io/slope/')">
+                    <img src="https://files.cults3d.com/uploaders/14004958/illustration-file/a86d53e2-2576-47a3-a75d-327c4b145100/Slope.jpg" class="game-img" alt="Slope">
+                    <div class="game-overlay">
+                        <span>Slope</span>
+                        <div class="play-tag">NATIVE</div>
+                    </div>
+                </div>
+
+                <!-- Game 7: Cookie Clicker -->
+                <div class="game-card" onclick="launchDirect('https://tbt.github.io/cookieclicker/')">
+                    <img src="https://play-lh.googleusercontent.com/OssE3ON9ysscKp6D6Y_926x7wX_6f6c653_5_7_8" class="game-img" alt="Cookie Clicker">
+                    <div class="game-overlay">
+                        <span>Cookie Clicker</span>
+                        <div class="play-tag">NATIVE</div>
+                    </div>
+                </div>
+
+                <!-- Game 8: Basket Random -->
+                <div class="game-card" onclick="launchDirect('https://basketball-random.github.io/')">
+                    <img src="https://img.poki.com/cdn-cgi/image/quality=78,width=600,height=600,fit=cover,f=auto/86992d9f7831776950eb292211ce7053.png" class="game-img" alt="Basket Random">
+                    <div class="game-overlay">
+                        <span>Basket Random</span>
+                        <div class="play-tag">NATIVE</div>
+                    </div>
+                </div>
+
+                <!-- Game 9: Subway Surfers Classic -->
+                <div class="game-card" onclick="launchDirect('https://subwaysurfersgo.com/subway-surf-classic')">
+                    <img src="https://subwaysurfers.com/media/2dzh0w1i/subway_surfers_keyart_open_graph_image.jpg" class="game-img" alt="Subway Surfers">
+                    <div class="game-overlay">
+                        <span>Subway Surfers Classic</span>
+                        <div class="play-tag">NATIVE</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SETTINGS TAB -->
+        <div id="settings" class="tab-content">
+            <div class="settings-card">
+                <h2 style="margin-bottom: 25px;">System Config</h2>
+                
+                <!-- Appearance & Cloaking -->
+                <div class="setting-section">
+                    <div class="setting-header">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M2 12h20M2 12l5-5m-5 5l5 5"></path></svg>
+                        Stealth & Appearance
+                    </div>
+
+                    <div class="setting-row">
+                        <span>Tab Disguise</span>
+                        <select id="cloak-select" onchange="applyCloak(this.value)">
+                            <option value="default">Default (Zero Proxy)</option>
+                            <option value="drive">Google Drive</option>
+                            <option value="canvas">Canvas</option>
+                            <option value="khan">Khan Academy</option>
+                            <option value="dreambox">Dreambox</option>
+                            <option value="onelogin">OneLogin</option>
+                            <option value="xtramath">XtraMath</option>
+                            <option value="classlink">ClassLink</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-row">
+                        <span>Power Saving</span>
+                        <label class="switch">
+                            <input type="checkbox" id="power-saving-check" onchange="togglePowerSaving(this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Panic Configuration -->
+                <div class="setting-section">
+                    <div class="setting-header" style="color: var(--panic-color);">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                        Panic Settings
+                    </div>
+                    
+                    <div class="setting-row">
+                        <span>Shortcut Key</span>
+                        <input type="text" id="panic-key-input" class="input-mini" placeholder="Press Key..." onkeydown="setPanicKey(event)" readonly>
+                    </div>
+                    
+                    <div class="setting-row">
+                        <span>Redirect URL</span>
+                        <input type="text" id="panic-url-input" placeholder="https://..." value="https://drive.google.com/drive/u/1/home" onchange="setPanicUrl(this.value)">
+                    </div>
+                </div>
+
+                <!-- Browser Config -->
+                <div class="setting-section">
+                    <div class="setting-header">
+                        <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                        Browser
+                    </div>
+                    <div class="setting-row">
+                        <span>Search Engine</span>
+                        <select id="engine-select" onchange="updateEngine()">
+                            <option value="yahoo">Yahoo</option>
+                            <option value="bing">Bing</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="background: #151515; padding: 20px; border-radius: 20px; border: 1px solid #333;">
+                    <h3 style="margin-bottom:10px; font-size:1.1rem;">Ghost Mode</h3>
+                    <p style="font-size:0.85rem; color:#777; line-height:1.5; margin-bottom:15px;">
+                        Launch Zero Proxy in an <b>About:Blank</b> cloak to hide from extension filters.
+                    </p>
+                    <button class="cloak-btn" onclick="openCloakedWindow()">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        Launch Cloaked Session
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROXY CONTAINER -->
+        <div id="proxy-container">
+            <div class="proxy-toolbar">
+                <div class="toolbar-btn" onclick="closeProxy()" title="Close Proxy">
+                    <svg class="icon" style="width:18px; height:18px;" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </div>
+                
+                <div id="display-url" class="proxy-url-display">Connecting...</div>
+                
+                <div class="toolbar-btn" onclick="document.getElementById('render-area').contentWindow.location.reload()" title="Refresh">
+                    <svg class="icon" style="width:18px; height:18px;" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                </div>
+
+                <div class="toolbar-btn" onclick="toggleFullscreen()" title="Fullscreen">
+                    <svg class="icon" style="width:18px; height:18px;" viewBox="0 0 24 24"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                </div>
+            </div>
+            <iframe id="render-area" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals allow-pointer-lock allow-presentation"></iframe>
+        </div>
+
+    </main>
+
+    <script>
+        // --- PRELOAD SETTINGS ---
+        let currentEngine = 'yahoo';
+        let panicUrl = localStorage.getItem('zp_panic_url') || 'https://drive.google.com/drive/u/1/home';
+        let panicKey = localStorage.getItem('zp_panic_key') || null;
+        let savedCloak = localStorage.getItem('zp_cloak') || 'default';
+        let isPowerSaving = localStorage.getItem('zp_power_saving') === 'true';
+
+        // --- INIT UI ---
+        document.getElementById('panic-url-input').value = panicUrl;
+        if(panicKey) document.getElementById('panic-key-input').value = panicKey;
+        document.getElementById('cloak-select').value = savedCloak;
+        document.getElementById('power-saving-check').checked = isPowerSaving;
+
+        // Apply saved states
+        if (isPowerSaving) document.body.classList.add('power-saving');
+        
+        // --- STORAGE HELPER ---
+        function saveSetting(key, value) {
+            localStorage.setItem(key, value);
+        }
+
+        // --- CLOAKING SYSTEM ---
+        const cloaks = {
+            'default': { title: 'Zero Proxy', icon: '' },
+            'drive': { title: 'My Drive - Google Drive', icon: 'https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png' },
+            'canvas': { title: 'Dashboard', icon: 'https://du11hjcvx0uqb.cloudfront.net/dist/images/favicon-e10d657a73.ico' },
+            'khan': { title: 'Khan Academy | Free Online Courses, Lessons & Practice', icon: 'https://www.google.com/s2/favicons?domain=khanacademy.org&sz=64' },
+            'dreambox': { title: 'Dreambox Learning', icon: 'https://www.google.com/s2/favicons?domain=dreambox.com&sz=64' },
+            'onelogin': { title: 'OneLogin', icon: 'https://www.google.com/s2/favicons?domain=onelogin.com&sz=64' },
+            'xtramath': { title: 'XtraMath', icon: 'https://www.google.com/s2/favicons?domain=xtramath.org&sz=64' },
+            'classlink': { title: 'ClassLink', icon: 'https://www.google.com/s2/favicons?domain=classlink.com&sz=64' }
+        };
+
+        function applyCloak(key) {
+            const data = cloaks[key] || cloaks['default'];
+            document.title = data.title;
+            document.getElementById('dynamic-favicon').href = data.icon;
+            saveSetting('zp_cloak', key);
+        }
+
+        applyCloak(savedCloak);
+
+        // --- POWER SAVING LOGIC ---
+        function togglePowerSaving(enabled) {
+            isPowerSaving = enabled;
+            saveSetting('zp_power_saving', enabled);
+            if (enabled) {
+                document.body.classList.add('power-saving');
+            } else {
+                document.body.classList.remove('power-saving');
+            }
+        }
+
+        // --- PANIC LOGIC ---
+        function triggerPanic() {
+            window.open(panicUrl, '_blank');
+            window.location.replace(panicUrl);
+        }
+
+        function setPanicUrl(url) {
+            panicUrl = url;
+            saveSetting('zp_panic_url', url);
+        }
+
+        function setPanicKey(event) {
+            event.preventDefault();
+            const key = event.key;
+            panicKey = key;
+            saveSetting('zp_panic_key', key);
+            document.getElementById('panic-key-input').value = key;
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (panicKey && e.key.toLowerCase() === panicKey.toLowerCase()) {
+                triggerPanic();
+            }
+        });
+
+        // --- NAVIGATION LOGIC ---
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            if(btn) {
+                document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+                btn.classList.add('active');
+            }
+            closeProxy();
+        }
+
+        function updateEngine() {
+            currentEngine = document.getElementById('engine-select').value;
+        }
+
+        function closeProxy() {
+            const container = document.getElementById('proxy-container');
+            const iframe = document.getElementById('render-area');
+            container.style.display = 'none';
+            iframe.srcdoc = ''; 
+            iframe.src = ''; 
+            document.getElementById('display-url').innerText = 'Idle';
+        }
+
+        function toggleFullscreen() {
+            const container = document.getElementById('proxy-container');
+            if (!document.fullscreenElement) {
+                container.requestFullscreen().catch(err => alert(err));
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        function openCloakedWindow() {
+            const win = window.open('about:blank', '_blank');
+            if (!win) { alert("Pop-up blocked!"); return; }
+            const doc = win.document;
+            doc.open();
+            doc.write(document.documentElement.outerHTML);
+            doc.close();
+        }
+
+        // --- PROXY LOGIC ---
+        
+        // Mode 1: Direct/Native (For Games/Embeds)
+        function launchDirect(url) {
+            const proxyContainer = document.getElementById('proxy-container');
+            const displayUrl = document.getElementById('display-url');
+            const iframe = document.getElementById('render-area');
+            proxyContainer.style.display = 'flex';
+            displayUrl.innerText = "Native: " + url;
+            iframe.removeAttribute('srcdoc');
+            iframe.src = url; 
+        }
+
+        const urlInput = document.getElementById('urlInput');
+        urlInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') handleSearch(urlInput.value);
+        });
+
+        // Mode 2: HTML Process (For Browsing)
+        function handleSearch(query) {
+            if(!query) return;
+            let targetUrl = '';
+            if(query.includes('.') && !query.includes(' ')) {
+                targetUrl = query.startsWith('http') ? query : 'https://' + query;
+            } else {
+                targetUrl = currentEngine === 'yahoo' 
+                    ? `https://search.yahoo.com/search?p=${encodeURIComponent(query)}`
+                    : `https://www.bing.com/search?q=${encodeURIComponent(query)}`;
+            }
+            launchProxy(targetUrl);
+        }
+
+        async function fetchAndProcess(url) {
+            const proxyGate = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+            const response = await fetch(proxyGate);
+            if(!response.ok) throw new Error('Fetch failed');
+            let htmlContent = await response.text();
+
+            // Rewrites
+            htmlContent = htmlContent.replace(/<iframe\s+([^>]*?)src=["']([^"']*)["']([^>]*?)>/gi, 
+                '<iframe $1 data-proxy-src="$2" src="about:blank" $3>');
+
+            const baseTag = `<base href="${url}">`;
+            
+            // STRICT NAVIGATION SCRIPT
+            const scriptInjection = `
+                <script>
+                    (function() {
+                        const uid = Math.random().toString(36).substr(2, 9);
+                        window.proxyId = uid;
+
+                        // 1. OMNI-REDIRECTOR: Intercept window.open
+                        const originalOpen = window.open;
+                        window.open = function(url, target) {
+                            if (url) {
+                                window.top.postMessage({action: 'navigate', url: url}, '*');
+                            }
+                            return null;
+                        };
+
+                        // 2. RECURSIVE IFRAME LOADER
+                        function activateIframes() {
+                            const frames = document.querySelectorAll('iframe[data-proxy-src]');
+                            frames.forEach(frame => {
+                                const target = frame.getAttribute('data-proxy-src');
+                                frame.removeAttribute('data-proxy-src'); 
+                                const frameId = 'frm-' + Math.random().toString(36).substr(2, 9);
+                                frame.id = frameId;
+                                window.top.postMessage({
+                                    action: 'proxy-embed',
+                                    url: target,
+                                    frameId: frameId,
+                                    sourceProxyId: uid 
+                                }, '*');
+                            });
+                        }
+
+                        const observer = new MutationObserver((mutations) => {
+                            let found = false;
+                            mutations.forEach(m => {
+                                m.addedNodes.forEach(n => {
+                                    if(n.tagName === 'IFRAME') {
+                                        if(n.src && !n.src.startsWith('about:') && !n.src.startsWith('data:')) {
+                                            const original = n.src;
+                                            n.src = 'about:blank';
+                                            n.setAttribute('data-proxy-src', original);
+                                            found = true;
+                                        }
+                                    }
+                                });
+                            });
+                            if(found) activateIframes();
+                        });
+                        observer.observe(document.body, {childList: true, subtree: true});
+
+                        document.addEventListener('DOMContentLoaded', () => {
+                            activateIframes();
+                            
+                            // 3. STRICT CLICK INTERCEPTOR (Bubbling phase)
+                            document.body.addEventListener('click', (e) => {
+                                const link = e.target.closest('a');
+                                if (link && link.href) {
+                                    // Prevent default nav behavior completely
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    // Force navigation via proxy engine
+                                    window.top.postMessage({action: 'navigate', url: link.href}, '*');
+                                }
+                            }, true); // Use Capture to run before other listeners
+
+                            // 4. FORM INTERCEPTOR (Search Bars)
+                            document.body.addEventListener('submit', (e) => {
+                                const form = e.target;
+                                if(form.action) {
+                                    e.preventDefault();
+                                    // Basic GET support for search bars
+                                    let query = new URLSearchParams(new FormData(form)).toString();
+                                    let target = form.action + (form.action.includes('?') ? '&' : '?') + query;
+                                    window.top.postMessage({action: 'navigate', url: target}, '*');
+                                }
+                            });
+                        });
+
+                        window.addEventListener('message', (e) => {
+                            if(e.data.action === 'fill-embed' && e.data.targetId) {
+                                const f = document.getElementById(e.data.targetId);
+                                if(f) f.srcdoc = e.data.html;
+                            }
+                        });
+                    })();
+                <\/script>
+            `;
+
+            if(htmlContent.includes('<head>')) {
+                htmlContent = htmlContent.replace('<head>', `<head>${baseTag}`);
+            } else {
+                htmlContent = baseTag + htmlContent;
+            }
+            htmlContent += scriptInjection;
+
+            return htmlContent;
+        }
+
+        async function launchProxy(url) {
+            const proxyContainer = document.getElementById('proxy-container');
+            const displayUrl = document.getElementById('display-url');
+            const iframe = document.getElementById('render-area');
+            proxyContainer.style.display = 'flex';
+            displayUrl.innerText = "Fetching: " + url;
+            iframe.removeAttribute('src');
+
+            try {
+                const processedHtml = await fetchAndProcess(url);
+                iframe.srcdoc = processedHtml;
+                displayUrl.innerText = url;
+            } catch (err) {
+                console.error(err);
+                iframe.srcdoc = `<div style="color:white;text-align:center;padding:50px;"><h2>Error</h2><p>${err.message}</p></div>`;
+            }
+        }
+
+        window.addEventListener('message', async (event) => {
+            if (!event.data) return;
+            // Strict Navigation Handler
+            if (event.data.action === 'navigate') {
+                launchProxy(event.data.url);
+            }
+            if (event.data.action === 'proxy-embed') {
+                try {
+                    const embedHtml = await fetchAndProcess(event.data.url);
+                    const mainProxy = document.getElementById('render-area');
+                    if(mainProxy.contentWindow) {
+                        mainProxy.contentWindow.postMessage({
+                            action: 'fill-embed',
+                            targetId: event.data.frameId,
+                            html: embedHtml
+                        }, '*');
+                    }
+                } catch(e) {}
+            }
+        });
+    </script>
+</body>
+</html>
