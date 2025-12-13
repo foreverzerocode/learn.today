@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zero Proxy</title>
-    <link id="dynamic-favicon" rel="icon" type="image/x-icon" href="">
+    <title>Google Drive</title> <!-- Default deceptive title -->
+    <link id="dynamic-favicon" rel="icon" type="image/x-icon" href="https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png">
     
     <style>
         /* --- CORE VISUALS & FONTS --- */
@@ -21,6 +21,7 @@
             --radius-lg: 32px;
             --radius-md: 20px;
             --panic-color: #ff4d4d;
+            --secure-color: #00ff88;
             
             /* Dynamic Variables */
             --blur-amount: 10px;
@@ -717,11 +718,35 @@
             <div class="settings-card">
                 <h2 style="margin-bottom: 25px;">System Config</h2>
                 
+                <!-- Security Settings -->
+                <div class="setting-section">
+                    <div class="setting-header" style="color: var(--secure-color);">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                        Security & Stealth
+                    </div>
+
+                    <div class="setting-row">
+                        <span>Disable Filtering Extensions</span>
+                        <label class="switch">
+                            <input type="checkbox" id="extension-blocker-check" checked onchange="toggleExtensionBlocker(this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div style="font-size:0.8rem; color:#666; margin-top:-10px; margin-bottom: 15px;">
+                        Prevents admin force-closing and confuses screen monitoring.
+                    </div>
+
+                    <div class="setting-row">
+                        <span>Secure Blob Launcher</span>
+                        <button class="action-btn" onclick="launchBlob()">Launch in Secure Blob</button>
+                    </div>
+                </div>
+
                 <!-- Appearance & Cloaking -->
                 <div class="setting-section">
                     <div class="setting-header">
                         <svg class="icon" viewBox="0 0 24 24"><path d="M2 12h20M2 12l5-5m-5 5l5 5"></path></svg>
-                        Stealth & Appearance
+                        Appearance
                     </div>
 
                     <div class="setting-row">
@@ -779,17 +804,6 @@
                         </select>
                     </div>
                 </div>
-
-                <div style="background: #151515; padding: 20px; border-radius: 20px; border: 1px solid #333;">
-                    <h3 style="margin-bottom:10px; font-size:1.1rem;">Ghost Mode</h3>
-                    <p style="font-size:0.85rem; color:#777; line-height:1.5; margin-bottom:15px;">
-                        Launch Zero Proxy in an <b>About:Blank</b> cloak to hide from extension filters.
-                    </p>
-                    <button class="cloak-btn" onclick="openCloakedWindow()">
-                        <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                        Launch Cloaked Session
-                    </button>
-                </div>
             </div>
         </div>
 
@@ -824,19 +838,63 @@
         let savedCloak = localStorage.getItem('zp_cloak') || 'default';
         let isPowerSaving = localStorage.getItem('zp_power_saving') === 'true';
         let useProxyEngine = true;
+        let extensionBlocker = localStorage.getItem('zp_ext_block') !== 'false'; // Default True
 
         // --- INIT UI ---
         document.getElementById('panic-url-input').value = panicUrl;
         if(panicKey) document.getElementById('panic-key-input').value = panicKey;
         document.getElementById('cloak-select').value = savedCloak;
         document.getElementById('power-saving-check').checked = isPowerSaving;
+        document.getElementById('extension-blocker-check').checked = extensionBlocker;
 
         // Apply saved states
         if (isPowerSaving) document.body.classList.add('power-saving');
+        if (extensionBlocker) activateExtensionBlocker();
         
         // --- STORAGE HELPER ---
         function saveSetting(key, value) {
             localStorage.setItem(key, value);
+        }
+
+        // --- EXTENSION BLOCKER LOGIC ---
+        let titleInterval;
+        function toggleExtensionBlocker(enabled) {
+            extensionBlocker = enabled;
+            saveSetting('zp_ext_block', enabled);
+            if(enabled) {
+                activateExtensionBlocker();
+            } else {
+                deactivateExtensionBlocker();
+            }
+        }
+
+        function activateExtensionBlocker() {
+            // 1. Anti-Close (BeforeUnload)
+            window.addEventListener('beforeunload', preventClose);
+            // 2. Title Scrambler
+            const titles = ["Google Drive", "Class", "My Drive", "Google Docs", "Inbox (3)", "Lesson Plan"];
+            titleInterval = setInterval(() => {
+                document.title = titles[Math.floor(Math.random() * titles.length)];
+            }, 5000);
+        }
+
+        function deactivateExtensionBlocker() {
+            window.removeEventListener('beforeunload', preventClose);
+            clearInterval(titleInterval);
+            applyCloak(savedCloak); // Reset title
+        }
+
+        function preventClose(e) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+
+        // --- BLOB LAUNCHER ---
+        function launchBlob() {
+            const htmlContent = document.documentElement.outerHTML;
+            const blob = new Blob([htmlContent], {type: 'text/html'});
+            const url = URL.createObjectURL(blob);
+            window.open(url, '_blank');
         }
 
         // --- PROXY TOGGLE LOGIC ---
@@ -863,7 +921,8 @@
             saveSetting('zp_cloak', key);
         }
 
-        applyCloak(savedCloak);
+        // Initial cloak apply (if blocker isn't scrambling)
+        if (!extensionBlocker) applyCloak(savedCloak);
 
         // --- POWER SAVING LOGIC ---
         function togglePowerSaving(enabled) {
