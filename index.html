@@ -521,7 +521,7 @@
     <nav>
         <div class="brand-pill">
             <svg class="icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-            Zero Proxy <span style="font-weight:300; opacity:0.5; font-size:0.8rem; margin-left:5px;">x.x.x</span>
+            Zero Proxy
         </div>
 
         <div class="nav-center">
@@ -1054,14 +1054,13 @@
                                     e.stopPropagation();
                                     window.top.postMessage({action: 'navigate', url: link.href}, '*');
                                 }
-                            }, true); // Use Capture to run before other listeners
+                            }, true);
 
                             // 4. FORM INTERCEPTOR (Search Bars)
                             document.body.addEventListener('submit', (e) => {
                                 const form = e.target;
                                 if(form.action) {
                                     e.preventDefault();
-                                    // Basic GET support for search bars
                                     let query = new URLSearchParams(new FormData(form)).toString();
                                     let target = form.action + (form.action.includes('?') ? '&' : '?') + query;
                                     window.top.postMessage({action: 'navigate', url: target}, '*');
@@ -1109,7 +1108,6 @@
 
         window.addEventListener('message', async (event) => {
             if (!event.data) return;
-            // Strict Navigation Handler
             if (event.data.action === 'navigate') {
                 launchProxy(event.data.url);
             }
