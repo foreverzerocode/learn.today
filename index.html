@@ -521,7 +521,7 @@
     <nav>
         <div class="brand-pill">
             <svg class="icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-            Zero Proxy <span style="font-weight:300; opacity:0.5; font-size:0.8rem; margin-left:5px;">v8.0</span>
+            Zero Proxy <span style="font-weight:300; opacity:0.5; font-size:0.8rem; margin-left:5px;">x.x.x</span>
         </div>
 
         <div class="nav-center">
@@ -585,6 +585,15 @@
             </div>
             
             <div class="games-grid">
+                <!-- App: HiAnime -->
+                <div class="game-card" onclick="launchProxy('https://hianime.to')">
+                    <img src="https://m.media-amazon.com/images/M/MV5BY2JiYTc1MzYtNzU1ZS00N2ZkLThlNTItNzc2Y2NhZDQwNzMyXkEyXkFqcGc@._V1_.jpg" class="game-img" alt="HiAnime">
+                    <div class="game-overlay">
+                        <span>HiAnime</span>
+                        <div class="play-tag">PROXY</div>
+                    </div>
+                </div>
+
                 <!-- Game: Polytrack -->
                 <div class="game-card" onclick="launchDirect('https://www.kodub.com/apps/polytrack')">
                     <img src="https://i.ytimg.com/vi/wXsG1d9TzdI/maxresdefault.jpg" class="game-img" alt="Polytrack">
@@ -662,6 +671,24 @@
                     <img src="https://slopegame.net/data/image/game/slope-game.png" class="game-img" alt="Slope">
                     <div class="game-overlay">
                         <span>Slope</span>
+                        <div class="play-tag">NATIVE</div>
+                    </div>
+                </div>
+
+                <!-- Game: Clicker Heroes -->
+                <div class="game-card" onclick="launchDirect('https://tbt.github.io/cookieclicker/')">
+                    <img src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/363970/1ab2c7ea7bca7bf51ac54949b00fd8b7619ce023/header.jpg?t=1765416038" class="game-img" alt="Clicker Heroes">
+                    <div class="game-overlay">
+                        <span>Clicker Heroes</span>
+                        <div class="play-tag">NATIVE</div>
+                    </div>
+                </div>
+
+                <!-- Game: Stick Hero -->
+                <div class="game-card" onclick="launchDirect('https://stick-hero.github.io/')">
+                    <img src="https://play-lh.googleusercontent.com/5J7yQeQkXJc10-T5u4fH8XjH9m4o6w0x5v2X2c6r8q9m5z7d4k3g8j1t9b2n6v4x" class="game-img" alt="Stick Hero">
+                    <div class="game-overlay">
+                        <span>Stick Hero</span>
                         <div class="play-tag">NATIVE</div>
                     </div>
                 </div>
@@ -1027,13 +1054,14 @@
                                     e.stopPropagation();
                                     window.top.postMessage({action: 'navigate', url: link.href}, '*');
                                 }
-                            }, true);
+                            }, true); // Use Capture to run before other listeners
 
                             // 4. FORM INTERCEPTOR (Search Bars)
                             document.body.addEventListener('submit', (e) => {
                                 const form = e.target;
                                 if(form.action) {
                                     e.preventDefault();
+                                    // Basic GET support for search bars
                                     let query = new URLSearchParams(new FormData(form)).toString();
                                     let target = form.action + (form.action.includes('?') ? '&' : '?') + query;
                                     window.top.postMessage({action: 'navigate', url: target}, '*');
@@ -1081,6 +1109,7 @@
 
         window.addEventListener('message', async (event) => {
             if (!event.data) return;
+            // Strict Navigation Handler
             if (event.data.action === 'navigate') {
                 launchProxy(event.data.url);
             }
