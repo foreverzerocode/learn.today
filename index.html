@@ -237,6 +237,16 @@
             height: 22px;
         }
 
+        /* --- CHAT TAB --- */
+        .chat-container {
+            width: 100%;
+            height: 100%;
+            max-width: 1000px;
+            background: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
         /* --- PROXY FRAME --- */
         #proxy-container {
             width: 100%;
@@ -442,6 +452,19 @@
             background-color: #000;
         }
 
+        .action-btn {
+            background: #333;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: 0.2s;
+        }
+        .action-btn:hover { background: #444; }
+
         .cloak-btn {
             background: #fff;
             color: #000;
@@ -486,6 +509,10 @@
                     <svg class="icon" viewBox="0 0 24 24"><polygon points="5 3 19 3 12 22 5 3"></polygon></svg>
                     Library
                 </div>
+                <div class="nav-btn" onclick="switchTab('chat', this)">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    Chat
+                </div>
                 <div class="nav-btn" onclick="switchTab('settings', this)">
                     <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                     Setup
@@ -522,7 +549,16 @@
             </div>
             
             <div class="games-grid">
-                <!-- Game 1: Eaglercraft -->
+                <!-- Game: Clicker Heroes (Replaces Basket Random) -->
+                <div class="game-card" onclick="launchDirect('https://clickerheroes.com/play')">
+                    <img src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/363970/1ab2c7ea7bca7bf51ac54949b00fd8b7619ce023/header.jpg?t=1765416038" class="game-img" alt="Clicker Heroes">
+                    <div class="game-overlay">
+                        <span>Clicker Heroes</span>
+                        <div class="play-tag">NATIVE</div>
+                    </div>
+                </div>
+
+                <!-- Game: Eaglercraft -->
                 <div class="game-card" onclick="launchDirect('https://eaglercraft.com/play/?version=1.8.8-wasm')">
                     <img src="https://assets.nintendo.com/image/upload/ar_16:9,c_lpad,w_1240/b_white/f_auto/q_auto/store/software/switch/70010000000964/a28a81253e919298beab2295e39a56b7a5140ef15abdb56135655e5c221b2a3a" class="game-img" alt="Minecraft">
                     <div class="game-overlay">
@@ -531,7 +567,7 @@
                     </div>
                 </div>
 
-                <!-- Game 2: Eaglercraft OFFLINE -->
+                <!-- Game: Eaglercraft OFFLINE -->
                 <div class="game-card" onclick="launchDirect('https://gleeful-dasik-5e1bc1.netlify.app/')">
                     <img src="https://www.minecraft.net/content/dam/minecraftnet/franchise/experiments/1182385_PDPRedesign/Gallery/PDP-Gallery_OV_6_16x9.jpg" class="game-img" alt="Eaglercraft Offline">
                     <div class="game-overlay">
@@ -540,7 +576,7 @@
                     </div>
                 </div>
 
-                <!-- Game 3: Tomb of the Mask -->
+                <!-- Game: Tomb of the Mask -->
                 <div class="game-card" onclick="launchDirect('https://venerable-yeot-6fe4ac.netlify.app/')">
                     <img src="https://play-lh.googleusercontent.com/ATGr-U4JBK2VjFzKGK9eMMkrDxJaazadOUoz_7Yl0U5NrWSFcFUzEtNurWXYzVWc8uOO" class="game-img" alt="Tomb of the Mask">
                     <div class="game-overlay">
@@ -549,7 +585,7 @@
                     </div>
                 </div>
 
-                <!-- Game 4: Among Us -->
+                <!-- Game: Among Us -->
                 <div class="game-card" onclick="launchDirect('https://amongusplay.online/')">
                     <img src="https://assets.nintendo.com/image/upload/ar_16:9,c_lpad,w_1240/b_white/f_auto/q_auto/store/software/switch/70010000036098/758ab0b61205081da2466386940752c70e0e5ea43bd39e8b9b13eaa455c69b7e" class="game-img" alt="Among Us">
                     <div class="game-overlay">
@@ -558,8 +594,8 @@
                     </div>
                 </div>
 
-                <!-- Game 5: Hollow Knight -->
-                <div class="game-card" onclick="launchDirect('https://zapgames.io/hollow-knight')">
+                <!-- Game: Hollow Knight -->
+                <div class="game-card" onclick="launchDirect('https://2games.io/hollow-knight')">
                     <img src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/367520/capsule_616x353.jpg?t=1764916620" class="game-img" alt="Hollow Knight">
                     <div class="game-overlay">
                         <span>Hollow Knight</span>
@@ -567,16 +603,16 @@
                     </div>
                 </div>
 
-                <!-- Game 6: Slope -->
+                <!-- Game: Slope -->
                 <div class="game-card" onclick="launchDirect('https://mathadventure1.github.io/slope/')">
-                    <img src="https://files.cults3d.com/uploaders/14004958/illustration-file/a86d53e2-2576-47a3-a75d-327c4b145100/Slope.jpg" class="game-img" alt="Slope">
+                    <img src="https://slopegame.net/data/image/game/slope-game.png" class="game-img" alt="Slope">
                     <div class="game-overlay">
                         <span>Slope</span>
                         <div class="play-tag">NATIVE</div>
                     </div>
                 </div>
 
-                <!-- Game 7: Cookie Clicker -->
+                <!-- Game: Cookie Clicker -->
                 <div class="game-card" onclick="launchDirect('https://tbt.github.io/cookieclicker/')">
                     <img src="https://play-lh.googleusercontent.com/OssE3ON9ysscKp6D6Y_926x7wX_6f6c653_5_7_8" class="game-img" alt="Cookie Clicker">
                     <div class="game-overlay">
@@ -585,16 +621,16 @@
                     </div>
                 </div>
 
-                <!-- Game 8: Basket Random -->
-                <div class="game-card" onclick="launchDirect('https://basketball-random.github.io/')">
-                    <img src="https://img.poki.com/cdn-cgi/image/quality=78,width=600,height=600,fit=cover,f=auto/86992d9f7831776950eb292211ce7053.png" class="game-img" alt="Basket Random">
+                <!-- Game: Stick Hero (Added per "Add Hero" request) -->
+                <div class="game-card" onclick="launchDirect('https://stick-hero.github.io/')">
+                    <img src="https://play-lh.googleusercontent.com/5J7yQeQkXJc10-T5u4fH8XjH9m4o6w0x5v2X2c6r8q9m5z7d4k3g8j1t9b2n6v4x" class="game-img" alt="Stick Hero">
                     <div class="game-overlay">
-                        <span>Basket Random</span>
+                        <span>Stick Hero</span>
                         <div class="play-tag">NATIVE</div>
                     </div>
                 </div>
 
-                <!-- Game 9: Subway Surfers Classic -->
+                <!-- Game: Subway Surfers Classic -->
                 <div class="game-card" onclick="launchDirect('https://subwaysurfersgo.com/subway-surf-classic')">
                     <img src="https://subwaysurfers.com/media/2dzh0w1i/subway_surfers_keyart_open_graph_image.jpg" class="game-img" alt="Subway Surfers">
                     <div class="game-overlay">
@@ -602,6 +638,14 @@
                         <div class="play-tag">NATIVE</div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- CHAT TAB -->
+        <div id="chat" class="tab-content">
+            <div class="chat-container">
+                <!-- Embedding Tlk.io for static site chat capability -->
+                <iframe src="https://tlk.io/zeroproxy_community" width="100%" height="100%" frameborder="0"></iframe>
             </div>
         </div>
 
@@ -637,6 +681,21 @@
                             <input type="checkbox" id="power-saving-check" onchange="togglePowerSaving(this.checked)">
                             <span class="slider"></span>
                         </label>
+                    </div>
+                </div>
+
+                <!-- Storage / Cookies -->
+                <div class="setting-section">
+                    <div class="setting-header">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        Data & Storage
+                    </div>
+                    <div class="setting-row">
+                        <span>Game Save Permissions</span>
+                        <button class="action-btn" onclick="requestCookies()">Request Storage Access</button>
+                    </div>
+                    <div style="font-size:0.8rem; color:#666; margin-top:-10px;">
+                        Forces permission for games to save data in iframes.
                     </div>
                 </div>
                 
@@ -703,7 +762,8 @@
                     <svg class="icon" style="width:18px; height:18px;" viewBox="0 0 24 24"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
                 </div>
             </div>
-            <iframe id="render-area" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals allow-pointer-lock allow-presentation"></iframe>
+            <!-- Added allow="storage-access" to help with cookies -->
+            <iframe id="render-area" allow="storage-access" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals allow-pointer-lock allow-presentation"></iframe>
         </div>
 
     </main>
@@ -728,6 +788,18 @@
         // --- STORAGE HELPER ---
         function saveSetting(key, value) {
             localStorage.setItem(key, value);
+        }
+
+        // --- COOKIE REQUEST LOGIC ---
+        function requestCookies() {
+            if ('requestStorageAccess' in document) {
+                document.requestStorageAccess().then(
+                    () => { alert('Storage access granted! Games should now save progress.'); },
+                    () => { alert('Access denied. Please check your browser privacy settings to allow "Third-party cookies".'); }
+                );
+            } else {
+                alert('Your browser does not support the Storage Access API. Please manually allow cookies for this site.');
+            }
         }
 
         // --- CLOAKING SYSTEM ---
@@ -931,20 +1003,17 @@
                             document.body.addEventListener('click', (e) => {
                                 const link = e.target.closest('a');
                                 if (link && link.href) {
-                                    // Prevent default nav behavior completely
                                     e.preventDefault();
                                     e.stopPropagation();
-                                    // Force navigation via proxy engine
                                     window.top.postMessage({action: 'navigate', url: link.href}, '*');
                                 }
-                            }, true); // Use Capture to run before other listeners
+                            }, true);
 
                             // 4. FORM INTERCEPTOR (Search Bars)
                             document.body.addEventListener('submit', (e) => {
                                 const form = e.target;
                                 if(form.action) {
                                     e.preventDefault();
-                                    // Basic GET support for search bars
                                     let query = new URLSearchParams(new FormData(form)).toString();
                                     let target = form.action + (form.action.includes('?') ? '&' : '?') + query;
                                     window.top.postMessage({action: 'navigate', url: target}, '*');
@@ -992,7 +1061,6 @@
 
         window.addEventListener('message', async (event) => {
             if (!event.data) return;
-            // Strict Navigation Handler
             if (event.data.action === 'navigate') {
                 launchProxy(event.data.url);
             }
