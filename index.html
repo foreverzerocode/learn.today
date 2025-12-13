@@ -190,7 +190,7 @@
         .center-wrapper {
             width: 100%;
             max-width: 680px;
-            margin-top: 15vh;
+            margin-top: 10vh;
             text-align: center;
         }
 
@@ -235,6 +235,31 @@
             pointer-events: none;
             width: 22px;
             height: 22px;
+        }
+
+        .proxy-toggle-container {
+            margin-top: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255,255,255,0.03);
+            padding: 15px 25px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .proxy-toggle-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .proxy-note {
+            font-size: 0.8rem;
+            color: #666;
+            max-width: 450px;
+            line-height: 1.4;
         }
 
         /* --- CHAT TAB --- */
@@ -496,7 +521,7 @@
     <nav>
         <div class="brand-pill">
             <svg class="icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-            Zero Proxy <span style="font-weight:300; opacity:0.5; font-size:0.8rem; margin-left:5px;">v7.5</span>
+            Zero Proxy <span style="font-weight:300; opacity:0.5; font-size:0.8rem; margin-left:5px;">v8.0</span>
         </div>
 
         <div class="nav-center">
@@ -514,7 +539,7 @@
                     Chat
                 </div>
                 <div class="nav-btn" onclick="switchTab('settings', this)">
-                    <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                     Setup
                 </div>
             </div>
@@ -536,8 +561,19 @@
                     <svg class="icon search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                     <input type="text" id="urlInput" class="url-input" placeholder="Type URL or search query..." autocomplete="off">
                 </div>
-                <div style="margin-top:20px; color:#555; font-size:0.8rem;">
-                    Recursive HTML Injection Active
+                
+                <!-- PROXY TOGGLE -->
+                <div class="proxy-toggle-container">
+                    <div class="proxy-toggle-row">
+                        <span style="font-weight: 500;">Convert Sites To HTML</span>
+                        <label class="switch">
+                            <input type="checkbox" id="proxy-mode-check" checked onchange="toggleProxyMode(this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <p class="proxy-note">
+                        Only disable this feature when sites containing games don't load. Disabling this feature will only load sites that allow embedding.
+                    </p>
                 </div>
             </div>
         </div>
@@ -549,11 +585,29 @@
             </div>
             
             <div class="games-grid">
-                <!-- Game: Clicker Heroes (Replaces Basket Random) -->
-                <div class="game-card" onclick="launchDirect('https://clickerheroes.com/play')">
-                    <img src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/363970/1ab2c7ea7bca7bf51ac54949b00fd8b7619ce023/header.jpg?t=1765416038" class="game-img" alt="Clicker Heroes">
+                <!-- Game: Polytrack -->
+                <div class="game-card" onclick="launchDirect('https://www.kodub.com/apps/polytrack')">
+                    <img src="https://i.ytimg.com/vi/wXsG1d9TzdI/maxresdefault.jpg" class="game-img" alt="Polytrack">
                     <div class="game-overlay">
-                        <span>Clicker Heroes</span>
+                        <span>Polytrack</span>
+                        <div class="play-tag">NATIVE</div>
+                    </div>
+                </div>
+
+                <!-- Game: Retro Bowl -->
+                <div class="game-card" onclick="launchDirect('https://1games.io/retro-bowl')">
+                    <img src="https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/store/software/switch/70010000048336/e3c1297d2ec30fe72a657af60c416d10c68a784bc874cf28e19cdf9261956919" class="game-img" alt="Retro Bowl">
+                    <div class="game-overlay">
+                        <span>Retro Bowl</span>
+                        <div class="play-tag">NATIVE</div>
+                    </div>
+                </div>
+
+                <!-- Game: Dashmetry -->
+                <div class="game-card" onclick="launchDirect('https://1games.io/dashmetry')">
+                    <img src="https://geometry-game.io/data/image/game/geometry-dash/dashmetry.png" class="game-img" alt="Dashmetry">
+                    <div class="game-overlay">
+                        <span>Dashmetry</span>
                         <div class="play-tag">NATIVE</div>
                     </div>
                 </div>
@@ -595,7 +649,7 @@
                 </div>
 
                 <!-- Game: Hollow Knight -->
-                <div class="game-card" onclick="launchDirect('https://2games.io/hollow-knight')">
+                <div class="game-card" onclick="launchDirect('https://zapgames.io/hollow-knight')">
                     <img src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/367520/capsule_616x353.jpg?t=1764916620" class="game-img" alt="Hollow Knight">
                     <div class="game-overlay">
                         <span>Hollow Knight</span>
@@ -608,24 +662,6 @@
                     <img src="https://slopegame.net/data/image/game/slope-game.png" class="game-img" alt="Slope">
                     <div class="game-overlay">
                         <span>Slope</span>
-                        <div class="play-tag">NATIVE</div>
-                    </div>
-                </div>
-
-                <!-- Game: Cookie Clicker -->
-                <div class="game-card" onclick="launchDirect('https://tbt.github.io/cookieclicker/')">
-                    <img src="https://play-lh.googleusercontent.com/OssE3ON9ysscKp6D6Y_926x7wX_6f6c653_5_7_8" class="game-img" alt="Cookie Clicker">
-                    <div class="game-overlay">
-                        <span>Cookie Clicker</span>
-                        <div class="play-tag">NATIVE</div>
-                    </div>
-                </div>
-
-                <!-- Game: Stick Hero (Added per "Add Hero" request) -->
-                <div class="game-card" onclick="launchDirect('https://stick-hero.github.io/')">
-                    <img src="https://play-lh.googleusercontent.com/5J7yQeQkXJc10-T5u4fH8XjH9m4o6w0x5v2X2c6r8q9m5z7d4k3g8j1t9b2n6v4x" class="game-img" alt="Stick Hero">
-                    <div class="game-overlay">
-                        <span>Stick Hero</span>
                         <div class="play-tag">NATIVE</div>
                     </div>
                 </div>
@@ -681,21 +717,6 @@
                             <input type="checkbox" id="power-saving-check" onchange="togglePowerSaving(this.checked)">
                             <span class="slider"></span>
                         </label>
-                    </div>
-                </div>
-
-                <!-- Storage / Cookies -->
-                <div class="setting-section">
-                    <div class="setting-header">
-                        <svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                        Data & Storage
-                    </div>
-                    <div class="setting-row">
-                        <span>Game Save Permissions</span>
-                        <button class="action-btn" onclick="requestCookies()">Request Storage Access</button>
-                    </div>
-                    <div style="font-size:0.8rem; color:#666; margin-top:-10px;">
-                        Forces permission for games to save data in iframes.
                     </div>
                 </div>
                 
@@ -775,6 +796,7 @@
         let panicKey = localStorage.getItem('zp_panic_key') || null;
         let savedCloak = localStorage.getItem('zp_cloak') || 'default';
         let isPowerSaving = localStorage.getItem('zp_power_saving') === 'true';
+        let useProxyEngine = true;
 
         // --- INIT UI ---
         document.getElementById('panic-url-input').value = panicUrl;
@@ -790,16 +812,9 @@
             localStorage.setItem(key, value);
         }
 
-        // --- COOKIE REQUEST LOGIC ---
-        function requestCookies() {
-            if ('requestStorageAccess' in document) {
-                document.requestStorageAccess().then(
-                    () => { alert('Storage access granted! Games should now save progress.'); },
-                    () => { alert('Access denied. Please check your browser privacy settings to allow "Third-party cookies".'); }
-                );
-            } else {
-                alert('Your browser does not support the Storage Access API. Please manually allow cookies for this site.');
-            }
+        // --- PROXY TOGGLE LOGIC ---
+        function toggleProxyMode(enabled) {
+            useProxyEngine = enabled;
         }
 
         // --- CLOAKING SYSTEM ---
@@ -930,7 +945,12 @@
                     ? `https://search.yahoo.com/search?p=${encodeURIComponent(query)}`
                     : `https://www.bing.com/search?q=${encodeURIComponent(query)}`;
             }
-            launchProxy(targetUrl);
+            
+            if (useProxyEngine) {
+                launchProxy(targetUrl);
+            } else {
+                launchDirect(targetUrl);
+            }
         }
 
         async function fetchAndProcess(url) {
