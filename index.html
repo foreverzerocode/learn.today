@@ -3,611 +3,712 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Secure, fast, and unblocked browsing.">
-    <title>Google Drive</title>
-    <link id="dynamic-favicon" rel="icon" type="image/x-icon" href="https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png">
+    <title>Zero Proxy | Unblocked</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- PWA / Mobile Optimization -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
     <style>
-        /* --- 1. CORE AESTHETICS (OLED Dark Theme) --- */
-        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700&display=swap');
-
         :root {
-            --bg: #000000;
-            --surface: #0a0a0a;
-            --surface-2: #141414;
-            --border: #333333;
-            --text-main: #ffffff;
-            --text-dim: #888888;
-            --accent: #ffffff; 
-            --panic: #ff3333;
-            
-            --nav-height: 70px;
-            --radius: 16px;
-            --ease: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            --bg-color: #050505;
+            --sidebar-color: #0a0a0a;
+            --accent-color: #7209b7;
+            --accent-hover: #b5179e;
+            --text-color: #e0e0e0;
+            --sub-text: #6c757d;
+            --card-bg: #111111;
+            --border-color: #222;
+            --transition-speed: 0.3s;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Manrope', sans-serif; -webkit-font-smoothing: antialiased; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
 
         body {
-            background-color: var(--bg);
-            color: var(--text-main);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
             height: 100vh;
             overflow: hidden;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 70px;
+            background-color: var(--sidebar-color);
             display: flex;
             flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+            border-right: 1px solid var(--border-color);
+            transition: width var(--transition-speed);
+            z-index: 100;
+        }
+        .sidebar:hover { width: 220px; }
+
+        .logo {
+            color: var(--accent-color);
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        .logo span { margin-left: 15px; opacity: 0; transition: 0.2s; font-weight: bold; }
+        .sidebar:hover .logo span { opacity: 1; }
+
+        .nav-item {
+            width: 100%;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            padding-left: 22px;
+            cursor: pointer;
+            transition: 0.3s;
+            color: var(--sub-text);
+        }
+        .nav-item:hover, .nav-item.active {
+            color: var(--text-color);
+            background: rgba(255,255,255,0.05);
+            border-right: 3px solid var(--accent-color);
+        }
+        .nav-item i { width: 30px; font-size: 1.2rem; }
+        .nav-text { margin-left: 15px; opacity: 0; white-space: nowrap; transition: 0.2s; }
+        .sidebar:hover .nav-text { opacity: 1; }
+
+        /* --- MOBILE MODE CSS --- */
+        body.mobile-mode .sidebar {
+            position: absolute;
+            bottom: 0; left: 0; width: 100%; height: 60px;
+            flex-direction: row; justify-content: space-around;
+            padding-top: 0; border-right: none; border-top: 1px solid var(--border-color);
+        }
+        body.mobile-mode .sidebar:hover { width: 100%; height: 60px; } 
+        body.mobile-mode .nav-item { padding: 0; justify-content: center; height: 100%; border-right: none; }
+        body.mobile-mode .nav-item.active { border-top: 3px solid var(--accent-color); border-right: none; }
+        body.mobile-mode .nav-text, body.mobile-mode .logo { display: none; }
+        body.mobile-mode .main { padding-bottom: 60px; }
+
+        /* --- CONTENT --- */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
         }
 
-        /* --- 2. ICONS (SVG) --- */
-        .icon { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none; }
-
-        /* --- 3. AUTH SCREEN --- */
-        #auth-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 9999;
-            display: flex; align-items: center; justify-content: center;
+        .top-bar {
+            height: 60px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+            justify-content: space-between;
+            background: var(--bg-color);
         }
-        .auth-card {
-            background: var(--surface); border: 1px solid var(--border);
-            padding: 40px; border-radius: var(--radius); width: 100%; max-width: 380px;
+
+        .status-indicator {
+            font-size: 0.8rem;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .pulse {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-color);
+            animation: pulseAnim 1s infinite;
+        }
+        @keyframes pulseAnim { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        .content-area {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .tab { display: none; animation: fadeUp 0.4s ease; }
+        .tab.active { display: block; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- SEARCH UI --- */
+        .search-wrapper {
+            max-width: 800px;
+            margin: 5vh auto;
             text-align: center;
         }
-        .inp-group { margin-bottom: 15px; text-align: left; }
-        .inp-group label { font-size: 0.8rem; color: var(--text-dim); margin-bottom: 5px; display: block; }
-        .auth-inp {
-            width: 100%; padding: 12px; background: var(--surface-2);
-            border: 1px solid var(--border); color: #fff; border-radius: 8px; outline: none;
-        }
-        .auth-inp:focus { border-color: #fff; }
-        .auth-btn {
-            width: 100%; padding: 12px; background: #fff; color: #000;
-            border: none; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 10px;
-        }
-
-        /* --- 4. NAVIGATION --- */
-        nav {
-            height: var(--nav-height); border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 30px; background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); z-index: 100;
-        }
-        .logo { font-weight: 800; letter-spacing: -0.5px; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
         
-        .tabs { display: flex; gap: 5px; background: var(--surface); padding: 4px; border-radius: 50px; border: 1px solid var(--border); }
-        .tab {
-            padding: 8px 20px; border-radius: 40px; cursor: pointer;
-            color: var(--text-dim); font-size: 0.85rem; font-weight: 600;
-            transition: var(--ease); display: flex; align-items: center; gap: 8px;
+        .dashboard-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            color: var(--sub-text);
+            font-size: 1.1rem;
+            font-weight: 500;
         }
-        .tab:hover { color: #fff; }
-        .tab.active { background: #fff; color: #000; }
+        .dashboard-info span { display: flex; align-items: center; gap: 10px; }
+        .dashboard-info i { color: var(--accent-color); }
 
-        .panic {
-            background: #220000; color: var(--panic); border: 1px solid #440000;
-            padding: 8px 20px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: var(--ease);
+        .search-bar {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            margin-top: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transition: 0.3s;
         }
-        .panic:hover { background: var(--panic); color: #fff; }
-
-        /* --- 5. MAIN CONTENT --- */
-        main { flex: 1; position: relative; overflow: hidden; }
-        .page {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            padding: 30px; overflow-y: auto; opacity: 0; pointer-events: none;
-            transition: var(--ease); transform: translateY(10px);
+        .search-bar:focus-within { border-color: var(--accent-color); box-shadow: 0 5px 25px rgba(114, 9, 183, 0.2); }
+        .search-bar input {
+            background: transparent;
+            border: none;
+            color: white;
+            flex: 1;
+            height: 100%;
+            font-size: 1rem;
+            outline: none;
+            margin-left: 15px;
         }
-        .page.active { opacity: 1; pointer-events: all; transform: translateY(0); }
-
-        /* DASHBOARD */
-        .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto; }
-        .stat-box {
-            background: var(--surface); border: 1px solid var(--border);
-            padding: 20px; border-radius: var(--radius);
-            display: flex; flex-direction: column; gap: 5px;
+        .search-bar button {
+            background: transparent;
+            border: none;
+            color: var(--sub-text);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: 0.2s;
         }
-        .stat-val { font-size: 1.8rem; font-weight: 700; }
-        .stat-label { color: var(--text-dim); font-size: 0.9rem; }
+        .search-bar button:hover { color: var(--accent-color); }
 
-        .creator-area { max-width: 1000px; margin: 40px auto 0; background: var(--surface); border: 1px solid var(--border); padding: 30px; border-radius: var(--radius); }
-        .input-row { display: flex; gap: 10px; margin-bottom: 10px; }
-        .full-inp { flex: 1; background: var(--surface-2); border: 1px solid var(--border); color: white; padding: 10px; border-radius: 8px; outline: none; }
+        /* --- IFRAME CONTAINER --- */
+        .frame-container {
+            width: 100%;
+            height: calc(100vh - 150px);
+            background: #fff;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+            display: none; 
+        }
+        iframe { width: 100%; height: 100%; border: none; }
+
+        .frame-controls {
+            position: absolute;
+            top: 10px; right: 10px;
+            display: flex; gap: 10px; z-index: 10;
+        }
+        .frame-btn {
+            color: white; border: none; padding: 6px 12px;
+            border-radius: 4px; cursor: pointer; font-size: 0.9rem;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .btn-close { background: #b91c1c; }
+        .btn-blank { background: var(--accent-color); }
         
-        /* LIBRARY GRID */
-        .grid-header { max-width: 1200px; margin: 0 auto 20px; display: flex; justify-content: space-between; align-items: center; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
-        
+        /* --- GAMES GRID --- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
         .card {
-            background: var(--surface); border: 1px solid var(--border);
-            border-radius: var(--radius); overflow: hidden; cursor: pointer;
-            position: relative; aspect-ratio: 16/9; transition: var(--ease);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+            height: 250px;
         }
-        .card:hover { transform: translateY(-4px); border-color: #555; }
-        .card-img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.8); }
-        .card-meta {
-            position: absolute; bottom: 0; left: 0; width: 100%; padding: 15px;
-            background: linear-gradient(0deg, #000, transparent);
-            display: flex; justify-content: space-between; align-items: flex-end;
-        }
-        .card-title { font-weight: 700; font-size: 1rem; }
-        .card-tag { font-size: 0.7rem; background: #fff; color: #000; padding: 2px 8px; border-radius: 4px; font-weight: 700; }
+        .card:hover { transform: translateY(-5px); border-color: var(--accent-color); }
         
-        /* BROWSER */
-        .browser-center { max-width: 600px; margin: 15vh auto 0; text-align: center; }
-        .search-wrap { position: relative; margin-bottom: 20px; }
-        .search-inp {
-            width: 100%; padding: 18px 20px 18px 50px; background: var(--surface);
-            border: 1px solid var(--border); border-radius: 50px; color: #fff; font-size: 1.1rem; outline: none;
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 0.3s;
+            display: block;
         }
-        .search-inp:focus { border-color: #fff; }
-        .search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--text-dim); }
-
-        /* PROXY VIEW */
-        #proxy-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #fff; z-index: 2000; display: none; flex-direction: column;
+        .card:hover .card-img { opacity: 0.8; }
+        
+        .card-title {
+            position: absolute;
+            bottom: 0; left: 0; width: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.95), transparent);
+            padding: 20px 10px;
+            color: white;
+            font-weight: bold;
+            z-index: 2;
         }
-        .proxy-bar {
-            height: 50px; background: #eee; display: flex; align-items: center;
-            padding: 0 15px; border-bottom: 1px solid #ccc; gap: 10px;
+
+        /* --- SETTINGS --- */
+        .setting-row {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--card-bg); padding: 20px;
+            border-radius: 8px; border: 1px solid var(--border-color);
+            margin-bottom: 15px; max-width: 600px;
         }
-        .proxy-info { flex: 1; color: #333; font-size: 0.9rem; font-weight: 600; text-align: center; }
-        .bar-btn { padding: 8px; border-radius: 6px; cursor: pointer; color: #333; }
-        .bar-btn:hover { background: #ddd; }
-        iframe { flex: 1; border: none; }
+        .toggle-btn {
+            background: #222; color: white;
+            border: 1px solid var(--border-color); padding: 8px 16px;
+            border-radius: 4px; cursor: pointer; margin-left: 10px; transition: 0.2s;
+        }
+        .toggle-btn.active { background: var(--accent-color); border-color: var(--accent-color); }
+        
+        .action-btn {
+            background: var(--accent-color); color: white;
+            border: none; padding: 8px 16px; border-radius: 4px;
+            cursor: pointer; transition: 0.2s;
+        }
+        .action-btn:hover { background: var(--accent-hover); }
 
-        /* TOGGLE */
-        .toggle-row { display: flex; align-items: center; gap: 10px; justify-content: center; color: var(--text-dim); font-size: 0.9rem; }
-        .switch { position: relative; width: 40px; height: 22px; }
-        .switch input { display: none; }
-        .slider { position: absolute; inset: 0; background: #333; border-radius: 20px; transition: 0.3s; }
-        .slider:before { content:""; position: absolute; height: 16px; width: 16px; left: 3px; bottom: 3px; background: #fff; border-radius: 50%; transition: 0.3s; }
-        input:checked + .slider { background: #fff; }
-        input:checked + .slider:before { transform: translateX(18px); background: #000; }
+        /* FILTER OPTIMIZER UI */
+        .filter-select {
+            background: #222;
+            color: white;
+            border: 1px solid var(--border-color);
+            padding: 8px;
+            border-radius: 4px;
+            margin-right: 10px;
+            outline: none;
+        }
+        .filter-status {
+            font-size: 0.8rem;
+            margin-top: 5px;
+            color: var(--accent-color);
+            display: none;
+        }
 
-        /* CHAT */
-        .chat-box { width: 100%; height: 100%; border: none; background: #fff; border-radius: var(--radius); }
+        .overlay-msg {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            color: #333; text-align: center; pointer-events: none; display: none;
+        }
+
     </style>
 </head>
 <body>
 
-    <!-- LOGIN -->
-    <div id="auth-overlay">
-        <div class="auth-card">
-            <h2 style="margin-bottom: 20px;">Zero Proxy</h2>
-            <div id="login-flow">
-                <div class="inp-group">
-                    <label>Username</label>
-                    <input type="text" id="u-in" class="auth-inp">
-                </div>
-                <div class="inp-group">
-                    <label>Password</label>
-                    <input type="password" id="p-in" class="auth-inp">
-                </div>
-                <!-- 2FA Field (Hidden until needed) -->
-                <div class="inp-group" id="2fa-group" style="display:none;">
-                    <label style="color:var(--secure-color)">2FA Code</label>
-                    <input type="password" id="2fa-in" class="auth-inp" style="border-color:var(--secure-color)">
-                </div>
-                <button class="auth-btn" onclick="login()">Login</button>
-                <div style="margin-top:15px; font-size:0.8rem; color:#666; cursor:pointer;" onclick="switchAuth('signup')">Create Account</div>
-            </div>
-            
-            <div id="signup-flow" style="display:none;">
-                <div class="inp-group"><label>New Username</label><input type="text" id="u-up" class="auth-inp"></div>
-                <div class="inp-group"><label>New Password</label><input type="password" id="p-up" class="auth-inp"></div>
-                <button class="auth-btn" onclick="signup()">Sign Up</button>
-                <div style="margin-top:15px; font-size:0.8rem; color:#666; cursor:pointer;" onclick="switchAuth('login')">Back to Login</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- UI -->
-    <nav>
+    <!-- Sidebar -->
+    <nav class="sidebar">
         <div class="logo">
-            <svg class="icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-            ZERO
+            <i class="fa-solid fa-server"></i>
+            <span>Zero Proxy</span>
         </div>
-        <div class="tabs">
-            <div class="tab active" onclick="tab('dash', this)">Dashboard</div>
-            <div class="tab" onclick="tab('browse', this)">Browser</div>
-            <div class="tab" onclick="tab('public', this)">Public</div>
-            <div class="tab" onclick="tab('private', this)">Private</div>
-            <div class="tab" onclick="tab('chat', this)">Chat</div>
-            <div class="tab" onclick="tab('settings', this)">Settings</div>
+        <div class="nav-item active" onclick="setTab('home')">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <span class="nav-text">Browse</span>
         </div>
-        <button class="panic" onclick="window.location.replace('https://classroom.google.com')">PANIC</button>
+        <div class="nav-item" onclick="setTab('games')">
+            <i class="fa-solid fa-gamepad"></i>
+            <span class="nav-text">Games</span>
+        </div>
+        <div class="nav-item" onclick="setTab('settings')">
+            <i class="fa-solid fa-sliders"></i>
+            <span class="nav-text">Settings</span>
+        </div>
     </nav>
 
-    <main>
-        
-        <!-- DASHBOARD -->
-        <div id="dash" class="page active">
-            <div class="dash-grid">
-                <div class="stat-box">
-                    <span class="stat-val" id="online-stat">--</span>
-                    <span class="stat-label">Online Users</span>
-                </div>
-                <div class="stat-box">
-                    <span class="stat-val" id="user-stat">Guest</span>
-                    <span class="stat-label">Active Session</span>
-                </div>
-                <div class="stat-box">
-                    <span class="stat-val" id="apps-stat">0</span>
-                    <span class="stat-label">Private Apps</span>
-                </div>
+    <!-- Main Content -->
+    <div class="main">
+        <div class="top-bar">
+            <div class="status-indicator">
+                <div class="pulse"></div>
+                <span id="process-monitor">System Idle</span>
             </div>
+            <div style="color: var(--sub-text); font-size: 0.9rem;">
+                Engine: <span style="color: var(--text-color);">Bing (Default)</span>
+            </div>
+        </div>
 
-            <div class="creator-area">
-                <h3 style="margin-bottom:20px;">Upload App (To Private Library)</h3>
-                <div class="input-row">
-                    <input type="text" id="up-name" class="full-inp" placeholder="App Name">
-                    <input type="text" id="up-icon" class="full-inp" placeholder="Logo URL">
-                </div>
-                <div class="input-row">
-                    <input type="text" id="up-url" class="full-inp" placeholder="URL (if linking)">
-                </div>
-                <div class="input-row">
-                    <textarea id="up-html" class="full-inp" style="height:100px; resize:vertical;" placeholder="Or Paste HTML Code..."></textarea>
-                </div>
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div class="toggle-row">
-                        <span>Use HTML Proxy?</span>
-                        <label class="switch"><input type="checkbox" id="up-proxy"><span class="slider"></span></label>
+        <div class="content-area">
+            
+            <!-- BROWSE TAB -->
+            <div id="home" class="tab active">
+                <div class="search-wrapper" id="search-ui">
+                    <h1 style="margin-bottom: 10px;">Zero Proxy</h1>
+                    <p style="color: var(--sub-text); margin-bottom: 30px;">Secure Container Environment</p>
+                    
+                    <div class="dashboard-info">
+                        <span id="time-display"><i class="fa-regular fa-clock"></i> --:-- --</span>
+                        <span id="battery-display"><i class="fa-solid fa-battery-half"></i> --%</span>
                     </div>
-                    <button class="auth-btn" style="width:auto; padding:10px 30px; margin:0;" onclick="uploadApp()">Add to Library</button>
+
+                    <div class="search-bar">
+                        <i class="fa-brands fa-microsoft"></i>
+                        <input type="text" id="url-input" placeholder="Search with Bing or enter URL..." autocomplete="off">
+                        <button onclick="executeProxy()"><i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <div class="frame-container" id="browser-view">
+                    <div class="frame-controls">
+                        <button class="frame-btn btn-blank" onclick="openFrameInBlank()">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Tab
+                        </button>
+                        <button class="frame-btn btn-close" onclick="closeFrame()">
+                            <i class="fa-solid fa-xmark"></i> Close
+                        </button>
+                    </div>
+                    <iframe id="proxy-frame" src=""></iframe>
+                    <div class="overlay-msg" id="blocked-msg">
+                        <h3>Content Loaded</h3>
+                        <p>If white screen: External refusal.</p>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- BROWSER -->
-        <div id="browse" class="page">
-            <div class="browser-center">
-                <h1>Surf.</h1>
-                <div class="search-wrap">
-                    <svg class="icon search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                    <input type="text" id="url-box" class="search-inp" placeholder="Search or Type URL...">
-                </div>
-                <div class="toggle-row">
-                    <span>Force HTML Conversion</span>
-                    <label class="switch"><input type="checkbox" id="force-html" checked><span class="slider"></span></label>
+            <!-- GAMES TAB -->
+            <div id="games" class="tab">
+                <h2 style="margin-bottom: 20px;">Local Library</h2>
+                <div class="grid">
+                    
+                    <!-- Eaglercraft -->
+                    <div class="card" onclick="launchGame('https://eaglercraft.com/play/?version=1.8.8-wasm')">
+                        <img src="https://assets.nintendo.com/image/upload/ar_16:9,c_lpad,w_1240/b_white/f_auto/q_auto/store/software/switch/70010000000964/a28a81253e919298beab2295e39a56b7a5140ef15abdb56135655e5c221b2a3a" alt="Eaglercraft" class="card-img">
+                        <div class="card-title">Eaglercraft (1.8)</div>
+                    </div>
+
+                    <!-- Hollow Knight -->
+                    <div class="card" onclick="launchGame('https://1games.io/hollow-knight')">
+                        <img src="https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/store/software/switch/70010000003208/4643fb058642335c523910f3a7910575f56372f612f7c0c9a497aaae978d3e51" alt="Hollow Knight" class="card-img">
+                        <div class="card-title">Hollow Knight</div>
+                    </div>
+
+                    <!-- Dashmetry -->
+                    <div class="card" onclick="launchGame('https://1games.io/dashmetry')">
+                        <img src="https://geometry-game.io/data/image/game/geometry-dash/dashmetry.png" alt="Dashmetry" class="card-img">
+                        <div class="card-title">Dashmetry</div>
+                    </div>
+
+                    <!-- Zombs Royale -->
+                    <div class="card" onclick="launchGame('https://zombsroyale.io')">
+                        <img src="https://imgs.crazygames.com/games/zombsroyaleio/cover-1587299840102.png?format=auto&quality=70&metadata=none" alt="Zombs Royale" class="card-img">
+                        <div class="card-title">Zombs Royale</div>
+                    </div>
+
+                    <!-- Slither.io -->
+                    <div class="card" onclick="launchGame('https://slither.io')">
+                        <img src="https://slither.io/s/fbthumb5.jpg" alt="Slither.io" class="card-img">
+                        <div class="card-title">Slither.io</div>
+                    </div>
+
+                    <!-- Poly Track -->
+                    <div class="card" onclick="launchGame('https://www.kodub.com/apps/polytrack')">
+                        <img src="https://i.ytimg.com/vi/wXsG1d9TzdI/maxresdefault.jpg" alt="Poly Track" class="card-img">
+                        <div class="card-title">Poly Track</div>
+                    </div>
+
+                    <!-- Storage Simulator -->
+                    <div class="card" onclick="launchGame('https://www.kodub.com/apps/storagesimulator')">
+                        <img src="https://www.kodub.com/apps/storagesimulator/image" alt="Storage Simulator" class="card-img">
+                        <div class="card-title">Storage Sim</div>
+                    </div>
+
+                    <!-- Undertale Clone -->
+                    <div class="card" onclick="launchGame('https://wyv-undertale.netlify.app/')">
+                        <img src="https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/store/software/switch/70010000009921/44bea8c565db26c0c470a6325a47c9ea031633945cb91e4b5e1b1a39b01a2cdb" alt="Undertale Clone" class="card-img">
+                        <div class="card-title">Undertale</div>
+                    </div>
+
+                    <!-- Among Us Clone -->
+                    <div class="card" onclick="launchGame('https://amongusplay.online/')">
+                        <img src="https://assets.nintendo.com/image/upload/ar_16:9,c_lpad,w_1240/b_white/f_auto/q_auto/store/software/switch/70010000036098/758ab0b61205081da2466386940752c70e0e5ea43bd39e8b9b13eaa455c69b7e" alt="Among Us" class="card-img">
+                        <div class="card-title">Among Us</div>
+                    </div>
+
+                    <!-- Tomb of the Mask -->
+                    <div class="card" onclick="launchGame('https://tombofthe-mask.com/')">
+                        <img src="https://play-lh.googleusercontent.com/ATGr-U4JBK2VjFzKGK9eMMkrDxJaazadOUoz_7Yl0U5NrWSFcFUzEtNurWXYzVWc8uOO" alt="Tomb of the Mask" class="card-img">
+                        <div class="card-title">Tomb of the Mask</div>
+                    </div>
+
                 </div>
             </div>
-        </div>
 
-        <!-- PUBLIC LIBRARY -->
-        <div id="public" class="page">
-            <div class="grid-header"><h2>Public Library</h2><span style="color:#666; font-size:0.8rem;">Official & Verified Apps</span></div>
-            <div class="grid" id="public-grid"></div>
-        </div>
+            <!-- SETTINGS TAB -->
+            <div id="settings" class="tab">
+                <h2 style="margin-bottom: 20px;">Configuration</h2>
 
-        <!-- PRIVATE LIBRARY -->
-        <div id="private" class="page">
-            <div class="grid-header"><h2>Private Library</h2><span style="color:#666; font-size:0.8rem;">Your Uploads</span></div>
-            <div class="grid" id="private-grid"></div>
-        </div>
+                <!-- Extension Optimizer (NEW) -->
+                <div class="setting-row">
+                    <div>
+                        <h3>Filter Disabler / Optimizer</h3>
+                        <p style="color: var(--sub-text); font-size: 0.9rem;">Choose your school's filter to attempt masking.</p>
+                        <div id="opt-status" class="filter-status"><i class="fa-solid fa-shield-halved"></i> Optimization Active: <span id="opt-name">None</span></div>
+                    </div>
+                    <div>
+                        <select id="filter-select" class="filter-select">
+                            <option value="none">Select Extension...</option>
+                            <option value="goguardian">GoGuardian</option>
+                            <option value="securly">Securly</option>
+                            <option value="lightspeed">Lightspeed</option>
+                            <option value="iboss">iBoss</option>
+                            <option value="hapara">Hapara</option>
+                        </select>
+                        <button class="action-btn" onclick="optimizeFilter()">Optimize</button>
+                    </div>
+                </div>
 
-        <!-- CHAT -->
-        <div id="chat" class="page">
-            <div style="max-width:1000px; height:100%; margin:0 auto; overflow:hidden; border-radius:16px;">
-                <iframe src="https://tlk.io/learn_today_hub" class="chat-box"></iframe>
-            </div>
-        </div>
-
-        <!-- SETTINGS -->
-        <div id="settings" class="page">
-            <div class="creator-area" style="margin:0 auto;">
-                <h3 style="margin-bottom:20px;">Configuration</h3>
+                <!-- About Blank CLOAKING -->
+                <div class="setting-row">
+                    <div>
+                        <h3>About:Blank Cloak</h3>
+                        <p style="color: var(--sub-text); font-size: 0.9rem;">Open entire site in hidden tab</p>
+                    </div>
+                    <div>
+                        <button class="action-btn" onclick="openSiteInBlank()">Launch Cloaked</button>
+                    </div>
+                </div>
                 
-                <div class="input-row" style="align-items:center; justify-content:space-between;">
-                    <span>2-Factor Auth</span>
-                    <label class="switch"><input type="checkbox" id="set-2fa" onchange="toggle2FA(this.checked)"><span class="slider"></span></label>
-                </div>
-                <div class="input-row" id="2fa-setup" style="display:none;">
-                    <input type="text" id="2fa-code-set" class="full-inp" placeholder="Set your security code">
-                    <button class="auth-btn" style="width:auto; margin:0;" onclick="save2FA()">Save</button>
-                </div>
-
-                <hr style="border:0; border-top:1px solid #333; margin:20px 0;">
-
-                <div class="input-row" style="align-items:center; justify-content:space-between;">
-                    <span>Tab Cloak</span>
-                    <select id="cloak-opt" class="full-inp" style="width:auto;" onchange="setCloak(this.value)">
-                        <option value="drive">Google Drive</option>
-                        <option value="class">Google Classroom</option>
-                        <option value="zoom">Zoom</option>
-                        <option value="canvas">Canvas</option>
-                    </select>
+                <!-- Anti-Filter Mode -->
+                <div class="setting-row">
+                    <div>
+                        <h3>Anti-Filter Mode</h3>
+                        <p style="color: var(--sub-text); font-size: 0.9rem;">Disable Extension Blocking</p>
+                    </div>
+                    <div>
+                        <button class="toggle-btn active" id="btn-anti-on" onclick="toggleAntiFilter(true)">ON</button>
+                        <button class="toggle-btn" id="btn-anti-off" onclick="toggleAntiFilter(false)">OFF</button>
+                    </div>
                 </div>
 
-                <button class="auth-btn" style="background:#333; color:#ff4d4d; margin-top:30px;" onclick="logout()">Logout</button>
+                <!-- Mobile Mode Toggle -->
+                <div class="setting-row">
+                    <div>
+                        <h3>Mobile Mode</h3>
+                        <p style="color: var(--sub-text); font-size: 0.9rem;">Compact sidebar for small screens</p>
+                    </div>
+                    <div>
+                        <button class="toggle-btn" id="btn-mobile-on" onclick="toggleMobileMode(true)">ON</button>
+                        <button class="toggle-btn active" id="btn-mobile-off" onclick="toggleMobileMode(false)">OFF</button>
+                    </div>
+                </div>
+
+                <!-- HTML Process Toggle -->
+                <div class="setting-row">
+                    <div>
+                        <h3>Site HTML Process</h3>
+                        <p style="color: var(--sub-text); font-size: 0.9rem;">Site Wrapper (Always on for Bing)</p>
+                    </div>
+                    <div>
+                        <button class="toggle-btn active" id="btn-html-on" onclick="toggleHtmlProcess(true)">ON</button>
+                        <button class="toggle-btn" id="btn-html-off" onclick="toggleHtmlProcess(false)">OFF</button>
+                    </div>
+                </div>
+
             </div>
-        </div>
 
-    </main>
-
-    <!-- PROXY OVERLAY -->
-    <div id="proxy-overlay">
-        <div class="proxy-bar">
-            <div class="bar-btn" onclick="closeApp()"><svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></div>
-            <div class="proxy-info" id="app-title">App</div>
-            <div class="bar-btn" onclick="document.querySelector('iframe').contentWindow.location.reload()"><svg class="icon" viewBox="0 0 24 24"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg></div>
-            <div class="bar-btn" onclick="fullScreen()"><svg class="icon" viewBox="0 0 24 24"><path d="M15 3h6v6"></path><path d="M9 21H3v-6"></path><path d="M21 3l-7 7"></path><path d="M3 21l7-7"></path></svg></div>
         </div>
-        <iframe id="viewer" allow="fullscreen; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
     </div>
 
     <script>
-        // --- 1. CONFIG & DATA ---
-        // Server URL (If you deploy server.js later, change this. Currently simulates via Tlk.io/Random)
-        const WEBSOCKET_URL = "wss://your-backend.onrender.com"; 
-        
-        const PUBLIC_APPS = [
-            { name: "Hollow Knight", img: "https://store-images.s-microsoft.com/image/apps.24270.13847644057609868.a4a91f76-8d1c-4e19-aa78-f4d27d2818fb.d96146d7-d00a-4db9-ad68-197b2f962a17?q=90&w=480&h=270", url: "https://2games.io/hollow-knight", type: "direct" },
-            { name: "Eaglercraft 1.8", img: "https://assets.nintendo.com/image/upload/ar_16:9,c_lpad,w_1240/b_white/f_auto/q_auto/store/software/switch/70010000000964/a28a81253e919298beab2295e39a56b7a5140ef15abdb56135655e5c221b2a3a", url: "https://eaglercraft.com/play/?version=1.8.8-wasm", type: "direct" },
-            { name: "Retro Bowl", img: "https://play-lh.googleusercontent.com/_ThkOwX1cyvQ4rKmEFy1rKZ6r99keqg3r55dNSUeCaWh4L0b5Y7-9y48P0m0Ozglmg=w526-h296-rw", url: "https://1games.io/retro-bowl", type: "direct" },
-            { name: "Slope", img: "https://slopegame.net/data/image/game/slope-game.png", url: "https://mathadventure1.github.io/slope/", type: "direct" },
-            { name: "HiAnime", img: "https://m.media-amazon.com/images/M/MV5BY2JiYTc1MzYtNzU1ZS00N2ZkLThlNTItNzc2Y2NhZDQwNzMyXkEyXkFqcGc@._V1_.jpg", url: "https://hianime.to", type: "proxy" },
-            { name: "Discord", img: "https://support.discord.com/hc/user_images/fBEuvpvxwAX3_rh2KTUj1Q.png", url: "https://discord.com", type: "proxy" }
-        ];
+        // --- CONFIGURATION ---
+        let currentUrlStore = ''; 
+        let useHtmlProcess = true; 
+        let antiFilterMode = true;
+        let activeOptimizer = 'none';
 
-        let user = localStorage.getItem('zp_user');
-        
-        // --- 2. INITIALIZATION ---
-        function init() {
-            if(!user) {
-                document.getElementById('auth-overlay').style.display = 'flex';
+        // --- FILTER OPTIMIZER LOGIC ---
+        function optimizeFilter() {
+            const select = document.getElementById('filter-select');
+            activeOptimizer = select.value;
+            const statusDiv = document.getElementById('opt-status');
+            const nameSpan = document.getElementById('opt-name');
+            
+            if (activeOptimizer !== 'none') {
+                statusDiv.style.display = 'block';
+                // Capitalize first letter
+                nameSpan.innerText = activeOptimizer.charAt(0).toUpperCase() + activeOptimizer.slice(1);
+                
+                // Visual feedback
+                const btn = document.querySelector('button[onclick="optimizeFilter()"]');
+                const originalText = btn.innerText;
+                btn.innerText = "Applied!";
+                btn.style.background = "#2cb67d";
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.background = "var(--accent-color)";
+                }, 1500);
             } else {
-                document.getElementById('auth-overlay').style.display = 'none';
-                document.getElementById('user-stat').innerText = user;
-                loadLibs();
-                startSocket(); // "Connect" to server
+                statusDiv.style.display = 'none';
             }
         }
 
-        // --- 3. AUTHENTICATION ---
-        function switchAuth(mode) {
-            document.getElementById('login-flow').style.display = mode === 'login' ? 'block' : 'none';
-            document.getElementById('signup-flow').style.display = mode === 'signup' ? 'block' : 'none';
+        // --- TIME & BATTERY LOGIC ---
+        function updateTime() {
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; 
+            document.getElementById('time-display').innerHTML = `<i class="fa-regular fa-clock"></i> ${hours}:${minutes} ${ampm}`;
         }
+        setInterval(updateTime, 1000);
+        updateTime();
 
-        function signup() {
-            const u = document.getElementById('u-up').value;
-            const p = document.getElementById('p-up').value;
-            if(!u || !p) return alert("Fill all fields");
-            if(localStorage.getItem('zp_acc_'+u)) return alert("User exists");
-            
-            localStorage.setItem('zp_acc_'+u, JSON.stringify({ pass: p, sec: null }));
-            alert("Account Created");
-            switchAuth('login');
-        }
-
-        function login() {
-            const u = document.getElementById('u-in').value;
-            const p = document.getElementById('p-in').value;
-            const acc = JSON.parse(localStorage.getItem('zp_acc_'+u) || "null");
-            
-            if(acc && acc.pass === p) {
-                // Check 2FA
-                if(acc.sec) {
-                    const group = document.getElementById('2fa-group');
-                    if(group.style.display === 'none') {
-                        group.style.display = 'block';
-                        return;
-                    }
-                    if(document.getElementById('2fa-in').value !== acc.sec) return alert("Wrong 2FA Code");
+        if (navigator.getBattery) {
+            navigator.getBattery().then(function(battery) {
+                function updateBatteryUI() {
+                    const level = Math.round(battery.level * 100);
+                    let icon = 'fa-battery-full';
+                    if(level < 90) icon = 'fa-battery-three-quarters';
+                    if(level < 60) icon = 'fa-battery-half';
+                    if(level < 30) icon = 'fa-battery-quarter';
+                    if(level < 10) icon = 'fa-battery-empty';
+                    document.getElementById('battery-display').innerHTML = `<i class="fa-solid ${icon}"></i> ${level}%`;
                 }
-                user = u;
-                localStorage.setItem('zp_user', u);
-                init();
-            } else {
-                alert("Invalid Credentials");
-            }
+                updateBatteryUI();
+                battery.addEventListener('levelchange', updateBatteryUI);
+            });
+        } else {
+            document.getElementById('battery-display').style.display = 'none';
         }
 
-        function logout() { localStorage.removeItem('zp_user'); location.reload(); }
-
-        // --- 4. NAVIGATION & TABS ---
-        function tab(id, btn) {
-            document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active'));
+        // --- UI LOGIC ---
+        function setTab(id) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.tab').forEach(e => e.classList.remove('active'));
-            btn.classList.add('active');
+            
+            const navItems = document.querySelectorAll('.nav-item');
+            if(id === 'home') navItems[0].classList.add('active');
+            if(id === 'games') navItems[1].classList.add('active');
+            if(id === 'settings') navItems[2].classList.add('active');
         }
 
-        // --- 5. LIBRARY LOGIC ---
-        function loadLibs() {
-            // Public Grid (Static)
-            const pubGrid = document.getElementById('public-grid');
-            pubGrid.innerHTML = '';
-            PUBLIC_APPS.forEach(app => renderCard(app, pubGrid, false));
-
-            // Private Grid (From LocalStorage)
-            const privGrid = document.getElementById('private-grid');
-            privGrid.innerHTML = '';
-            
-            // Get user apps
-            const userApps = JSON.parse(localStorage.getItem('zp_apps_'+user) || "[]");
-            document.getElementById('apps-stat').innerText = userApps.length;
-            
-            userApps.forEach((app, index) => renderCard(app, privGrid, true, index));
+        function closeFrame() {
+            document.getElementById('browser-view').style.display = 'none';
+            document.getElementById('search-ui').style.display = 'block';
+            document.getElementById('proxy-frame').src = '';
+            currentUrlStore = '';
         }
 
-        function renderCard(app, container, isPrivate, index) {
-            const el = document.createElement('div');
-            el.className = 'card';
-            el.onclick = (e) => {
-                if(!e.target.classList.contains('del-btn')) launch(app);
-            };
-            
-            let delHtml = isPrivate ? `<span class="card-tag" style="background:red; color:white; margin-left:5px; cursor:pointer;" class="del-btn" onclick="delApp(${index})">DEL</span>` : '';
-            
-            el.innerHTML = `
-                <img src="${app.img || ''}" class="card-img" onerror="this.style.display='none'">
-                <div class="card-meta">
-                    <span class="card-title">${app.name}</span>
-                    <div><span class="card-tag">${app.type === 'proxy' ? 'PROXY' : 'NATIVE'}</span>${delHtml}</div>
-                </div>
-            `;
-            container.appendChild(el);
+        function openSiteInBlank() {
+            const html = document.documentElement.outerHTML;
+            const win = window.open('about:blank', '_blank');
+            if(win) { win.document.write(html); win.document.close(); }
         }
 
-        // --- 6. UPLOADER ---
-        function uploadApp() {
-            const name = document.getElementById('up-name').value;
-            const img = document.getElementById('up-icon').value;
-            const url = document.getElementById('up-url').value;
-            const html = document.getElementById('up-html').value;
-            const useProxy = document.getElementById('up-proxy').checked;
-
-            if(!name) return alert("Name required");
-
-            const newApp = {
-                name, img, url, html,
-                type: useProxy ? 'proxy' : 'direct'
-            };
-
-            const apps = JSON.parse(localStorage.getItem('zp_apps_'+user) || "[]");
-            apps.push(newApp);
-            localStorage.setItem('zp_apps_'+user, JSON.stringify(apps));
-            
-            alert("App Added to Private Library");
-            loadLibs();
+        function toggleMobileMode(status) {
+            if(status) { document.body.classList.add('mobile-mode'); } 
+            else { document.body.classList.remove('mobile-mode'); }
+            document.getElementById('btn-mobile-on').classList.toggle('active', status);
+            document.getElementById('btn-mobile-off').classList.toggle('active', !status);
         }
 
-        function delApp(index) {
-            const apps = JSON.parse(localStorage.getItem('zp_apps_'+user) || "[]");
-            apps.splice(index, 1);
-            localStorage.setItem('zp_apps_'+user, JSON.stringify(apps));
-            loadLibs();
+        function toggleAntiFilter(status) {
+            antiFilterMode = status;
+            document.getElementById('btn-anti-on').classList.toggle('active', status);
+            document.getElementById('btn-anti-off').classList.toggle('active', !status);
         }
 
-        // --- 7. LAUNCHER SYSTEM ---
-        const viewer = document.getElementById('proxy-overlay');
-        const frame = document.getElementById('viewer');
-        const title = document.getElementById('app-title');
+        function toggleHtmlProcess(status) {
+            useHtmlProcess = status;
+            document.getElementById('btn-html-on').classList.toggle('active', status);
+            document.getElementById('btn-html-off').classList.toggle('active', !status);
+        }
 
-        function launch(app) {
-            viewer.style.display = 'flex';
-            title.innerText = app.name;
-            
-            if(app.html) {
-                frame.srcdoc = app.html;
-            } else if(app.type === 'proxy') {
-                proxyLoad(app.url);
+        function openFrameInBlank() {
+            if (!currentUrlStore) return;
+            const win = window.open();
+            win.document.body.style.margin = '0';
+            win.document.body.style.height = '100vh';
+            const iframe = win.document.createElement('iframe');
+            iframe.style.border = 'none'; iframe.style.width = '100%'; iframe.style.height = '100%';
+            iframe.src = currentUrlStore;
+            win.document.body.appendChild(iframe);
+        }
+
+        function launchGame(url) {
+            setTab('home');
+            document.getElementById('search-ui').style.display = 'none';
+            document.getElementById('browser-view').style.display = 'block';
+            document.getElementById('blocked-msg').style.display = 'none';
+            document.getElementById('proxy-frame').src = url;
+            currentUrlStore = url;
+        }
+
+        function executeProxy() {
+            const input = document.getElementById('url-input').value;
+            if(!input) return;
+
+            document.getElementById('search-ui').style.display = 'none';
+            document.getElementById('browser-view').style.display = 'block';
+            document.getElementById('blocked-msg').style.display = 'block';
+
+            let targetUrl = '';
+            let isSearch = false;
+
+            if (input.includes('.') && !input.includes(' ')) {
+                targetUrl = input.startsWith('http') ? input : 'https://' + input;
             } else {
-                frame.removeAttribute('srcdoc');
-                frame.src = app.url;
+                isSearch = true;
+                targetUrl = `https://www.bing.com/search?q=${encodeURIComponent(input)}`;
             }
-        }
+            
+            currentUrlStore = targetUrl;
+            const frame = document.getElementById('proxy-frame');
+            const shouldBlob = isSearch || useHtmlProcess;
 
-        function closeApp() {
-            viewer.style.display = 'none';
-            frame.src = 'about:blank';
-            frame.removeAttribute('srcdoc');
-        }
-
-        function fullScreen() {
-            !document.fullscreenElement ? viewer.requestFullscreen() : document.exitFullscreen();
-        }
-
-        // --- 8. PROXY ENGINE (HTML INJECTION) ---
-        async function proxyLoad(url) {
-            try {
-                // Using CorsProxy.io as the gateway
-                const req = await fetch('https://corsproxy.io/?' + encodeURIComponent(url));
-                let html = await req.text();
+            if (shouldBlob) {
+                // Determine Sandbox Flags (Anti-Filter Logic)
+                let sandboxFlags = antiFilterMode 
+                    ? "allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-popups" 
+                    : "allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-popups allow-top-navigation";
                 
-                // Inject Base to fix relative links
-                html = html.replace(/<head>/i, `<head><base href="${url}">`);
-                
-                // Inject Script to catch clicks/redirects
-                html += `<script>
-                    window.open = (u) => { window.top.postMessage({act:'nav', url:u}, '*'); return null; };
-                    document.addEventListener('click', e => {
-                        const t = e.target.closest('a');
-                        if(t && t.href) { e.preventDefault(); window.top.postMessage({act:'nav', url:t.href}, '*'); }
-                    });
-                <\/script>`;
-                
-                frame.srcdoc = html;
-            } catch(e) {
-                frame.srcdoc = '<div style="color:black; text-align:center; margin-top:50px;">Failed to proxy content.</div>';
-            }
-        }
+                // MASKING LOGIC: Fake Metadata
+                let fakeTitle = "Zero Proxy";
+                let fakeIcon = ""; // Default none
 
-        window.addEventListener('message', e => {
-            if(e.data.act === 'nav') proxyLoad(e.data.url);
-        });
-
-        // --- 9. BROWSER SEARCH ---
-        document.getElementById('url-box').addEventListener('keydown', (e) => {
-            if(e.key === 'Enter') {
-                const v = e.target.value;
-                const force = document.getElementById('force-html').checked;
-                let url = v;
-                
-                // Detection
-                if(v.includes('.') && !v.includes(' ')) {
-                    if(!v.startsWith('http')) url = 'https://' + v;
-                    if(force) launch({name: url, url: url, type: 'proxy'});
-                    else launch({name: url, url: url, type: 'direct'});
-                } else {
-                    // Search
-                    url = `https://search.yahoo.com/search?p=${encodeURIComponent(v)}`;
-                    launch({name: 'Search', url: url, type: 'proxy'});
+                if (activeOptimizer === 'goguardian' || activeOptimizer === 'securly' || activeOptimizer === 'lightspeed') {
+                    // Spoof Google Drive/Docs metadata to confuse tab scanners
+                    fakeTitle = "Google Drive";
+                    fakeIcon = "https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png";
                 }
+
+                const htmlContent = `
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>${fakeTitle}</title>
+                        <link rel="icon" href="${fakeIcon}">
+                        <style>body { margin: 0; overflow: hidden; }</style>
+                    </head>
+                    <body>
+                        <iframe src="${targetUrl}" style="width:100vw; height:100vh; border:none;" sandbox="${sandboxFlags}"></iframe>
+                    </body>
+                    </html>
+                `;
+                const blob = new Blob([htmlContent], { type: 'text/html' });
+                frame.src = URL.createObjectURL(blob);
+            } else {
+                frame.src = targetUrl;
             }
+        }
+
+        setInterval(() => {
+            const monitor = document.getElementById('process-monitor');
+            const fakeHex = Math.floor(Math.random() * 16777215).toString(16);
+            if(document.getElementById('browser-view').style.display === 'block') {
+                 monitor.innerText = `Updating: Packet 0x${fakeHex}`;
+            } else {
+                monitor.innerText = "System Idle - 0.1s Tick Active";
+            }
+        }, 100);
+
+        document.getElementById('url-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') executeProxy();
         });
 
-        // --- 10. REAL ONLINE USERS SIMULATION (or Socket) ---
-        function startSocket() {
-            // Since we can't spin up a Node server here, we simulate "Real" behavior
-            // using Tlk.io iframe checks or a randomized variance based on time.
-            // For a static site, this is the standard "connected" feel.
-            setInterval(() => {
-                const base = 142; // Base users
-                const varAmount = Math.floor(Math.random() * 15);
-                document.getElementById('online-stat').innerText = base + varAmount;
-            }, 5000);
-            document.getElementById('online-stat').innerText = "145";
-        }
-
-        // --- 11. SETTINGS & CLOAKING ---
-        function applyCloak(type) {
-            const map = {
-                'drive': {t:'My Drive - Google Drive', i:'https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png'},
-                'class': {t:'Classes', i:'https://www.gstatic.com/classroom/ic_product_classroom_32.png'},
-                'canvas': {t:'Dashboard', i:'https://du11hjcvx0uqb.cloudfront.net/dist/images/favicon-e10d657a73.ico'}
-            };
-            const c = map[type];
-            if(c) {
-                document.title = c.t;
-                document.getElementById('dynamic-favicon').href = c.i;
-            }
-        }
-
-        function toggle2FA(checked) {
-            const box = document.getElementById('2fa-setup');
-            box.style.display = checked ? 'flex' : 'none';
-            if(!checked) {
-                // Remove code
-                const acc = JSON.parse(localStorage.getItem('zp_acc_'+user));
-                acc.sec = null;
-                localStorage.setItem('zp_acc_'+user, JSON.stringify(acc));
-            }
-        }
-
-        function save2FA() {
-            const code = document.getElementById('2fa-code-set').value;
-            if(!code) return alert("Enter a code");
-            const acc = JSON.parse(localStorage.getItem('zp_acc_'+user));
-            acc.sec = code;
-            localStorage.setItem('zp_acc_'+user, JSON.stringify(acc));
-            alert("2FA Set!");
-        }
-
-        init();
     </script>
 </body>
 </html>
