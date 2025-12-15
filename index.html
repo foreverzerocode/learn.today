@@ -8,14 +8,16 @@
     
     <style>
         :root {
-            --bg-color: #050505;
-            --sidebar-color: #0a0a0a;
+            /* --- ONYX BLACK THEME --- */
+            --bg-color: #000000;
+            --sidebar-color: #030303;
             --accent-color: #7209b7;
-            --accent-hover: #b5179e;
-            --text-color: #e0e0e0;
-            --sub-text: #6c757d;
-            --card-bg: #111111;
-            --border-color: #222;
+            --accent-hover: #9d4edd;
+            --text-color: #ffffff;
+            --sub-text: #555555;
+            --card-bg: #080808;
+            --border-color: #1a1a1a;
+            --input-bg: #0a0a0a;
             --transition-speed: 0.3s;
         }
 
@@ -29,19 +31,41 @@
             overflow: hidden;
         }
 
+        /* --- SNOW (WHITE DOTS) --- */
+        #snow-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
+            overflow: hidden;
+        }
+
+        .snow-dot {
+            position: absolute;
+            top: -10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            user-select: none;
+            animation: fall linear infinite;
+        }
+        @keyframes fall { to { transform: translateY(110vh); } }
+
         /* --- SIDEBAR --- */
         .sidebar {
-            width: 70px;
+            width: 80px;
             background-color: var(--sidebar-color);
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: 20px;
+            padding-top: 30px;
             border-right: 1px solid var(--border-color);
             transition: width var(--transition-speed);
             z-index: 100;
         }
-        .sidebar:hover { width: 220px; }
+        .sidebar:hover { width: 240px; }
 
         .logo {
             color: var(--accent-color);
@@ -58,36 +82,37 @@
         .sidebar:hover .logo span { opacity: 1; }
 
         .nav-item {
-            width: 100%;
+            width: 90%; 
             height: 55px;
             display: flex;
             align-items: center;
-            padding-left: 22px;
+            padding-left: 15px;
             cursor: pointer;
             transition: 0.3s;
             color: var(--sub-text);
+            border-radius: 30px; 
+            margin-bottom: 5px;
         }
         .nav-item:hover, .nav-item.active {
             color: var(--text-color);
             background: rgba(255,255,255,0.05);
-            border-right: 3px solid var(--accent-color);
         }
-        .nav-item i { width: 30px; font-size: 1.2rem; }
+        .nav-item i { width: 30px; font-size: 1.2rem; text-align: center; }
         .nav-text { margin-left: 15px; opacity: 0; white-space: nowrap; transition: 0.2s; }
         .sidebar:hover .nav-text { opacity: 1; }
 
         /* --- MOBILE MODE CSS --- */
         body.mobile-mode .sidebar {
             position: absolute;
-            bottom: 0; left: 0; width: 100%; height: 60px;
+            bottom: 0; left: 0; width: 100%; height: 70px;
             flex-direction: row; justify-content: space-around;
             padding-top: 0; border-right: none; border-top: 1px solid var(--border-color);
         }
-        body.mobile-mode .sidebar:hover { width: 100%; height: 60px; } 
-        body.mobile-mode .nav-item { padding: 0; justify-content: center; height: 100%; border-right: none; }
-        body.mobile-mode .nav-item.active { border-top: 3px solid var(--accent-color); border-right: none; }
+        body.mobile-mode .sidebar:hover { width: 100%; height: 70px; } 
+        body.mobile-mode .nav-item { width: auto; padding: 0 20px; justify-content: center; height: 100%; border-radius: 0; margin: 0; }
+        body.mobile-mode .nav-item.active { color: var(--accent-color); background: transparent; }
         body.mobile-mode .nav-text, body.mobile-mode .logo { display: none; }
-        body.mobile-mode .main { padding-bottom: 60px; }
+        body.mobile-mode .main { padding-bottom: 70px; }
 
         /* --- CONTENT --- */
         .main {
@@ -98,13 +123,14 @@
         }
 
         .top-bar {
-            height: 60px;
+            height: 70px;
             border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: center;
-            padding: 0 30px;
+            padding: 0 40px;
             justify-content: space-between;
             background: var(--bg-color);
+            position: relative;
         }
 
         .status-indicator {
@@ -126,7 +152,7 @@
 
         .content-area {
             flex: 1;
-            padding: 30px;
+            padding: 40px;
             overflow-y: auto;
         }
 
@@ -154,25 +180,25 @@
         .dashboard-info i { color: var(--accent-color); }
 
         .search-bar {
-            background: var(--card-bg);
+            background: var(--input-bg);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            height: 50px;
+            border-radius: 50px; 
+            height: 60px;
             display: flex;
             align-items: center;
-            padding: 0 20px;
+            padding: 0 30px;
             margin-top: 20px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             transition: 0.3s;
         }
-        .search-bar:focus-within { border-color: var(--accent-color); box-shadow: 0 5px 25px rgba(114, 9, 183, 0.2); }
+        .search-bar:focus-within { border-color: var(--accent-color); box-shadow: 0 10px 40px rgba(114, 9, 183, 0.2); }
         .search-bar input {
             background: transparent;
             border: none;
             color: white;
             flex: 1;
             height: 100%;
-            font-size: 1rem;
+            font-size: 1.1rem;
             outline: none;
             margin-left: 15px;
         }
@@ -184,29 +210,37 @@
             font-size: 1.2rem;
             transition: 0.2s;
         }
-        .search-bar button:hover { color: var(--accent-color); }
+        .search-bar button:hover { color: var(--accent-color); transform: scale(1.1); }
 
         /* --- IFRAME CONTAINER --- */
         .frame-container {
             width: 100%;
             height: calc(100vh - 150px);
-            background: #fff;
-            border-radius: 6px;
+            background: #000;
+            border-radius: 24px;
             overflow: hidden;
             position: relative;
             display: none; 
+            border: 1px solid var(--border-color);
         }
         iframe { width: 100%; height: 100%; border: none; }
+        
+        /* CSS Filter for Force Dark Mode */
+        .force-dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
 
         .frame-controls {
             position: absolute;
-            top: 10px; right: 10px;
+            top: 15px; right: 15px;
             display: flex; gap: 10px; z-index: 10;
         }
         .frame-btn {
-            color: white; border: none; padding: 6px 12px;
-            border-radius: 4px; cursor: pointer; font-size: 0.9rem;
-            display: flex; align-items: center; gap: 5px;
+            color: white; border: none; padding: 8px 16px;
+            border-radius: 30px; 
+            cursor: pointer; font-size: 0.9rem;
+            display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
         .btn-close { background: #b91c1c; }
         .btn-blank { background: var(--accent-color); }
@@ -215,20 +249,20 @@
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 20px;
+            gap: 25px;
         }
         .card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 24px;
             overflow: hidden;
             text-align: center;
             cursor: pointer;
             transition: 0.3s;
             position: relative;
-            height: 250px;
+            height: 260px;
         }
-        .card:hover { transform: translateY(-5px); border-color: var(--accent-color); }
+        .card:hover { transform: translateY(-8px); border-color: var(--accent-color); box-shadow: 0 10px 25px rgba(0,0,0,0.6); }
         
         .card-img {
             width: 100%;
@@ -236,49 +270,60 @@
             object-fit: cover;
             transition: 0.3s;
             display: block;
+            opacity: 0.7;
         }
-        .card:hover .card-img { opacity: 0.8; }
+        .card-img.contain {
+            object-fit: contain; 
+            padding: 40px;
+            background: #000;
+        }
+        .card:hover .card-img { opacity: 1; transform: scale(1.05); }
         
         .card-title {
             position: absolute;
             bottom: 0; left: 0; width: 100%;
-            background: linear-gradient(to top, rgba(0,0,0,0.95), transparent);
-            padding: 20px 10px;
+            background: linear-gradient(to top, #000 20%, transparent);
+            padding: 25px 10px 15px;
             color: white;
             font-weight: bold;
             z-index: 2;
+            border-bottom-left-radius: 24px;
+            border-bottom-right-radius: 24px;
         }
 
         /* --- SETTINGS --- */
         .setting-row {
             display: flex; justify-content: space-between; align-items: center;
-            background: var(--card-bg); padding: 20px;
-            border-radius: 8px; border: 1px solid var(--border-color);
-            margin-bottom: 15px; max-width: 600px;
+            background: var(--card-bg); padding: 25px;
+            border-radius: 20px; 
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px; max-width: 650px;
         }
         .toggle-btn {
-            background: #222; color: white;
-            border: 1px solid var(--border-color); padding: 8px 16px;
-            border-radius: 4px; cursor: pointer; margin-left: 10px; transition: 0.2s;
+            background: #111; color: white;
+            border: 1px solid var(--border-color); padding: 10px 20px;
+            border-radius: 30px; 
+            cursor: pointer; margin-left: 10px; transition: 0.2s;
         }
         .toggle-btn.active { background: var(--accent-color); border-color: var(--accent-color); }
         
         .action-btn {
             background: var(--accent-color); color: white;
-            border: none; padding: 8px 16px; border-radius: 4px;
+            border: none; padding: 10px 20px; border-radius: 30px;
             cursor: pointer; transition: 0.2s;
         }
-        .action-btn:hover { background: var(--accent-hover); }
+        .action-btn:hover { background: var(--accent-hover); transform: translateY(-2px); }
 
-        /* FILTER OPTIMIZER UI */
+        /* UI DROPDOWNS */
         .filter-select {
-            background: #222;
+            background: #111;
             color: white;
             border: 1px solid var(--border-color);
-            padding: 8px;
-            border-radius: 4px;
+            padding: 10px 15px;
+            border-radius: 30px;
             margin-right: 10px;
             outline: none;
+            width: 220px;
         }
         .filter-status {
             font-size: 0.8rem;
@@ -289,12 +334,15 @@
 
         .overlay-msg {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            color: #333; text-align: center; pointer-events: none; display: none;
+            color: #555; text-align: center; pointer-events: none; display: none;
         }
 
     </style>
 </head>
 <body>
+
+    <!-- SNOW CONTAINER -->
+    <div id="snow-container"></div>
 
     <!-- Sidebar -->
     <nav class="sidebar">
@@ -324,7 +372,7 @@
                 <span id="process-monitor">System Idle</span>
             </div>
             <div style="color: var(--sub-text); font-size: 0.9rem;">
-                Engine: <span style="color: var(--text-color);">Bing (Default)</span>
+                Engine: <span style="color: var(--text-color);">Zero Browser</span>
             </div>
         </div>
 
@@ -343,7 +391,7 @@
 
                     <div class="search-bar">
                         <i class="fa-brands fa-microsoft"></i>
-                        <input type="text" id="url-input" placeholder="Search with Bing or enter URL..." autocomplete="off">
+                        <input type="text" id="url-input" placeholder="Search Zero Browser or enter URL..." autocomplete="off">
                         <button onclick="executeProxy()"><i class="fa-solid fa-arrow-right"></i></button>
                     </div>
                 </div>
@@ -370,6 +418,12 @@
                 <h2 style="margin-bottom: 20px;">Local Library</h2>
                 <div class="grid">
                     
+                    <!-- HiAnime -->
+                    <div class="card" onclick="launchGame('https://hianime.to/')">
+                        <img src="https://cdn2.steamgriddb.com/grid/d4b0d38ac177563362dc85001c9e7b0d.jpg" alt="HiAnime" class="card-img">
+                        <div class="card-title">HiAnime</div>
+                    </div>
+
                     <!-- Eaglercraft -->
                     <div class="card" onclick="launchGame('https://eaglercraft.com/play/?version=1.8.8-wasm')">
                         <img src="https://assets.nintendo.com/image/upload/ar_16:9,c_lpad,w_1240/b_white/f_auto/q_auto/store/software/switch/70010000000964/a28a81253e919298beab2295e39a56b7a5140ef15abdb56135655e5c221b2a3a" alt="Eaglercraft" class="card-img">
@@ -383,8 +437,8 @@
                     </div>
 
                     <!-- Dashmetry -->
-                    <div class="card" onclick="launchGame('https://1games.io/dashmetry')">
-                        <img src="https://geometry-game.io/data/image/game/geometry-dash/dashmetry.png" alt="Dashmetry" class="card-img">
+                    <div class="card" onclick="launchGame('https://geometry-game.io/data/image/game/geometry-dash/dashmetry.png')">
+                        <img src="https://geometry-game.io/data/image/game/geometry-dash/dashmetry.png" alt="Dashmetry" class="card-img contain">
                         <div class="card-title">Dashmetry</div>
                     </div>
 
@@ -437,11 +491,55 @@
             <div id="settings" class="tab">
                 <h2 style="margin-bottom: 20px;">Configuration</h2>
 
-                <!-- Extension Optimizer (NEW) -->
+                <!-- Tab Cloaker -->
+                <div class="setting-row">
+                    <div>
+                        <h3>Tab Cloaker</h3>
+                        <p style="color: var(--sub-text); font-size: 0.9rem;">Disguise this tab as another site.</p>
+                    </div>
+                    <div>
+                        <select id="cloak-select" class="filter-select" onchange="applyTabCloak(this.value)">
+                            <option value="none">Default (Zero Proxy)</option>
+                            <option value="canvas">Canvas</option>
+                            <option value="onelogin">OneLogin</option>
+                            <option value="xtramath">XtraMath</option>
+                            <option value="dreambox">Dreambox</option>
+                            <option value="khan">Khan Academy</option>
+                            <option value="classroom">Google Classroom</option>
+                            <option value="drive">Google Drive</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Secure Proxy Toggle -->
+                <div class="setting-row">
+                    <div>
+                        <h3>Process All Sites (HTML Blob)</h3>
+                        <p style="color: var(--sub-text); font-size: 0.9rem;">ON: Blobs all sites (Cloaked). OFF: Blobs only Bing.</p>
+                    </div>
+                    <div>
+                        <button class="toggle-btn active" id="btn-process-on" onclick="toggleSiteProcess(true)">ON</button>
+                        <button class="toggle-btn" id="btn-process-off" onclick="toggleSiteProcess(false)">OFF</button>
+                    </div>
+                </div>
+
+                <!-- Disable Cookies Toggle -->
+                <div class="setting-row">
+                    <div>
+                        <h3>Disable Cookies</h3>
+                        <p style="color: var(--sub-text); font-size: 0.9rem;">Prevents data persistence to hide tracking.</p>
+                    </div>
+                    <div>
+                        <button class="toggle-btn active" id="btn-cookie-on" onclick="toggleCookies(true)">ON</button>
+                        <button class="toggle-btn" id="btn-cookie-off" onclick="toggleCookies(false)">OFF</button>
+                    </div>
+                </div>
+
+                <!-- Extension Optimizer -->
                 <div class="setting-row">
                     <div>
                         <h3>Filter Disabler / Optimizer</h3>
-                        <p style="color: var(--sub-text); font-size: 0.9rem;">Choose your school's filter to attempt masking.</p>
+                        <p style="color: var(--sub-text); font-size: 0.9rem;">Specific masking for your school filter.</p>
                         <div id="opt-status" class="filter-status"><i class="fa-solid fa-shield-halved"></i> Optimization Active: <span id="opt-name">None</span></div>
                     </div>
                     <div>
@@ -451,7 +549,6 @@
                             <option value="securly">Securly</option>
                             <option value="lightspeed">Lightspeed</option>
                             <option value="iboss">iBoss</option>
-                            <option value="hapara">Hapara</option>
                         </select>
                         <button class="action-btn" onclick="optimizeFilter()">Optimize</button>
                     </div>
@@ -480,39 +577,60 @@
                     </div>
                 </div>
 
-                <!-- Mobile Mode Toggle -->
-                <div class="setting-row">
-                    <div>
-                        <h3>Mobile Mode</h3>
-                        <p style="color: var(--sub-text); font-size: 0.9rem;">Compact sidebar for small screens</p>
-                    </div>
-                    <div>
-                        <button class="toggle-btn" id="btn-mobile-on" onclick="toggleMobileMode(true)">ON</button>
-                        <button class="toggle-btn active" id="btn-mobile-off" onclick="toggleMobileMode(false)">OFF</button>
-                    </div>
-                </div>
-
-                <!-- HTML Process Toggle -->
-                <div class="setting-row">
-                    <div>
-                        <h3>Site HTML Process</h3>
-                        <p style="color: var(--sub-text); font-size: 0.9rem;">Site Wrapper (Always on for Bing)</p>
-                    </div>
-                    <div>
-                        <button class="toggle-btn active" id="btn-html-on" onclick="toggleHtmlProcess(true)">ON</button>
-                        <button class="toggle-btn" id="btn-html-off" onclick="toggleHtmlProcess(false)">OFF</button>
-                    </div>
-                </div>
-
             </div>
 
         </div>
     </div>
 
     <script>
+        // --- SNOW LOGIC ---
+        function initSnow() {
+            const container = document.getElementById('snow-container');
+            const maxSnow = 50;
+            setInterval(() => {
+                if(container.childElementCount > maxSnow) return;
+                const flake = document.createElement('div');
+                flake.className = 'snow-dot';
+                const size = Math.random() * 4 + 2 + 'px'; 
+                flake.style.width = size;
+                flake.style.height = size;
+                flake.style.left = Math.random() * 100 + 'vw';
+                flake.style.animationDuration = (Math.random() * 3 + 4) + 's'; 
+                flake.style.opacity = Math.random() * 0.7 + 0.3; 
+                container.appendChild(flake);
+                setTimeout(() => { flake.remove(); }, 7000);
+            }, 150);
+        }
+        initSnow();
+
+        // --- TAB CLOAK LOGIC ---
+        const cloaks = {
+            'canvas': { title: 'Dashboard', icon: 'https://du11hjcvx0uqb.cloudfront.net/dist/images/favicon-e10d657a73.ico' },
+            'onelogin': { title: 'OneLogin Portal', icon: 'https://www.onelogin.com/assets/img/favicons/favicon.ico' },
+            'xtramath': { title: 'XtraMath', icon: 'https://xtramath.org/assets/icons/favicon.ico' },
+            'dreambox': { title: 'DreamBox Learning', icon: 'https://www.dreambox.com/favicon.ico' },
+            'khan': { title: 'Khan Academy', icon: 'https://www.khanacademy.org/favicon.ico' },
+            'classroom': { title: 'Classes', icon: 'https://ssl.gstatic.com/classroom/favicon.png' },
+            'drive': { title: 'My Drive - Google Drive', icon: 'https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png' },
+            'none': { title: 'Zero Proxy | Unblocked', icon: '' } 
+        };
+
+        function applyTabCloak(val) {
+            const preset = cloaks[val];
+            if(preset) {
+                document.title = preset.title;
+                let link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+                link.type = 'image/x-icon';
+                link.rel = 'shortcut icon';
+                link.href = preset.icon;
+                document.getElementsByTagName('head')[0].appendChild(link);
+            }
+        }
+
         // --- CONFIGURATION ---
         let currentUrlStore = ''; 
-        let useHtmlProcess = true; 
+        let processAllSites = true; 
+        let disableCookies = true;
         let antiFilterMode = true;
         let activeOptimizer = 'none';
 
@@ -525,18 +643,12 @@
             
             if (activeOptimizer !== 'none') {
                 statusDiv.style.display = 'block';
-                // Capitalize first letter
                 nameSpan.innerText = activeOptimizer.charAt(0).toUpperCase() + activeOptimizer.slice(1);
-                
-                // Visual feedback
                 const btn = document.querySelector('button[onclick="optimizeFilter()"]');
                 const originalText = btn.innerText;
                 btn.innerText = "Applied!";
                 btn.style.background = "#2cb67d";
-                setTimeout(() => {
-                    btn.innerText = originalText;
-                    btn.style.background = "var(--accent-color)";
-                }, 1500);
+                setTimeout(() => { btn.innerText = originalText; btn.style.background = "var(--accent-color)"; }, 1500);
             } else {
                 statusDiv.style.display = 'none';
             }
@@ -548,12 +660,10 @@
             let hours = now.getHours();
             const minutes = now.getMinutes().toString().padStart(2, '0');
             const ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12;
-            hours = hours ? hours : 12; 
+            hours = hours % 12; hours = hours ? hours : 12; 
             document.getElementById('time-display').innerHTML = `<i class="fa-regular fa-clock"></i> ${hours}:${minutes} ${ampm}`;
         }
-        setInterval(updateTime, 1000);
-        updateTime();
+        setInterval(updateTime, 1000); updateTime();
 
         if (navigator.getBattery) {
             navigator.getBattery().then(function(battery) {
@@ -569,16 +679,13 @@
                 updateBatteryUI();
                 battery.addEventListener('levelchange', updateBatteryUI);
             });
-        } else {
-            document.getElementById('battery-display').style.display = 'none';
-        }
+        } else { document.getElementById('battery-display').style.display = 'none'; }
 
         // --- UI LOGIC ---
         function setTab(id) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            
             const navItems = document.querySelectorAll('.nav-item');
             if(id === 'home') navItems[0].classList.add('active');
             if(id === 'games') navItems[1].classList.add('active');
@@ -589,6 +696,7 @@
             document.getElementById('browser-view').style.display = 'none';
             document.getElementById('search-ui').style.display = 'block';
             document.getElementById('proxy-frame').src = '';
+            document.getElementById('proxy-frame').classList.remove('force-dark-mode');
             currentUrlStore = '';
         }
 
@@ -598,23 +706,23 @@
             if(win) { win.document.write(html); win.document.close(); }
         }
 
-        function toggleMobileMode(status) {
-            if(status) { document.body.classList.add('mobile-mode'); } 
-            else { document.body.classList.remove('mobile-mode'); }
-            document.getElementById('btn-mobile-on').classList.toggle('active', status);
-            document.getElementById('btn-mobile-off').classList.toggle('active', !status);
+        // --- SETTINGS TOGGLES ---
+        function toggleSiteProcess(status) {
+            processAllSites = status;
+            document.getElementById('btn-process-on').classList.toggle('active', status);
+            document.getElementById('btn-process-off').classList.toggle('active', !status);
+        }
+
+        function toggleCookies(status) {
+            disableCookies = status;
+            document.getElementById('btn-cookie-on').classList.toggle('active', status);
+            document.getElementById('btn-cookie-off').classList.toggle('active', !status);
         }
 
         function toggleAntiFilter(status) {
             antiFilterMode = status;
             document.getElementById('btn-anti-on').classList.toggle('active', status);
             document.getElementById('btn-anti-off').classList.toggle('active', !status);
-        }
-
-        function toggleHtmlProcess(status) {
-            useHtmlProcess = status;
-            document.getElementById('btn-html-on').classList.toggle('active', status);
-            document.getElementById('btn-html-off').classList.toggle('active', !status);
         }
 
         function openFrameInBlank() {
@@ -628,6 +736,7 @@
             win.document.body.appendChild(iframe);
         }
 
+        // --- GAME LAUNCHERS ---
         function launchGame(url) {
             setTab('home');
             document.getElementById('search-ui').style.display = 'none';
@@ -637,6 +746,7 @@
             currentUrlStore = url;
         }
 
+        // --- BROWSER EXECUTOR ---
         function executeProxy() {
             const input = document.getElementById('url-input').value;
             if(!input) return;
@@ -646,34 +756,53 @@
             document.getElementById('blocked-msg').style.display = 'block';
 
             let targetUrl = '';
-            let isSearch = false;
-
+            let isBing = false;
+            
             if (input.includes('.') && !input.includes(' ')) {
                 targetUrl = input.startsWith('http') ? input : 'https://' + input;
             } else {
-                isSearch = true;
+                isBing = true;
                 targetUrl = `https://www.bing.com/search?q=${encodeURIComponent(input)}`;
             }
             
             currentUrlStore = targetUrl;
             const frame = document.getElementById('proxy-frame');
-            const shouldBlob = isSearch || useHtmlProcess;
+            
+            // Apply Dark Mode Filter ONLY for Bing to make it "Zero Browser" style
+            if(isBing) {
+                frame.classList.add('force-dark-mode');
+            } else {
+                frame.classList.remove('force-dark-mode');
+            }
+            
+            const shouldBlob = isBing || processAllSites;
 
             if (shouldBlob) {
-                // Determine Sandbox Flags (Anti-Filter Logic)
-                let sandboxFlags = antiFilterMode 
-                    ? "allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-popups" 
-                    : "allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-popups allow-top-navigation";
-                
-                // MASKING LOGIC: Fake Metadata
-                let fakeTitle = "Zero Proxy";
-                let fakeIcon = ""; // Default none
+                let fakeTitle = isBing ? "Zero Browser" : "Zero Proxy";
+                let fakeIcon = ""; 
 
                 if (activeOptimizer === 'goguardian' || activeOptimizer === 'securly' || activeOptimizer === 'lightspeed') {
-                    // Spoof Google Drive/Docs metadata to confuse tab scanners
                     fakeTitle = "Google Drive";
                     fakeIcon = "https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png";
                 }
+
+                // IMPORTANT: Removed 'allow-top-navigation' to prevent redirects
+                let sandboxFlags = antiFilterMode 
+                    ? "allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-popups allow-modals" 
+                    : "allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-popups";
+
+                const injectScript = `
+                    <script>
+                        setInterval(() => {
+                            if(document.title !== "${fakeTitle}") { document.title = "${fakeTitle}"; }
+                        }, 50);
+                        const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+                        link.type = 'image/x-icon'; link.rel = 'shortcut icon'; link.href = '${fakeIcon}';
+                        document.getElementsByTagName('head')[0].appendChild(link);
+                        
+                        ${disableCookies ? 'try { document.cookie = ""; window.localStorage.clear(); window.sessionStorage.clear(); } catch(e){}' : ''}
+                    <\/script>
+                `;
 
                 const htmlContent = `
                     <!DOCTYPE html>
@@ -681,13 +810,15 @@
                     <head>
                         <title>${fakeTitle}</title>
                         <link rel="icon" href="${fakeIcon}">
-                        <style>body { margin: 0; overflow: hidden; }</style>
+                        <style>body { margin: 0; overflow: hidden; background: #fff; }</style>
+                        ${activeOptimizer !== 'none' || disableCookies ? injectScript : ''}
                     </head>
                     <body>
                         <iframe src="${targetUrl}" style="width:100vw; height:100vh; border:none;" sandbox="${sandboxFlags}"></iframe>
                     </body>
                     </html>
                 `;
+
                 const blob = new Blob([htmlContent], { type: 'text/html' });
                 frame.src = URL.createObjectURL(blob);
             } else {
