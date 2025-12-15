@@ -267,15 +267,10 @@
         .card-img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: cover; /* Forces image to fill the card */
             transition: 0.3s;
             display: block;
             opacity: 0.7;
-        }
-        .card-img.contain {
-            object-fit: contain; 
-            padding: 40px;
-            background: #000;
         }
         .card:hover .card-img { opacity: 1; transform: scale(1.05); }
         
@@ -438,7 +433,7 @@
 
                     <!-- Dashmetry -->
                     <div class="card" onclick="launchGame('https://geometry-game.io/data/image/game/geometry-dash/dashmetry.png')">
-                        <img src="https://geometry-game.io/data/image/game/geometry-dash/dashmetry.png" alt="Dashmetry" class="card-img contain">
+                        <img src="https://geometry-game.io/data/image/game/geometry-dash/dashmetry.png" alt="Dashmetry" class="card-img">
                         <div class="card-title">Dashmetry</div>
                     </div>
 
@@ -768,7 +763,7 @@
             currentUrlStore = targetUrl;
             const frame = document.getElementById('proxy-frame');
             
-            // Apply Dark Mode Filter ONLY for Bing to make it "Zero Browser" style
+            // Apply Dark Mode Filter ONLY for Bing
             if(isBing) {
                 frame.classList.add('force-dark-mode');
             } else {
@@ -786,7 +781,7 @@
                     fakeIcon = "https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png";
                 }
 
-                // IMPORTANT: Removed 'allow-top-navigation' to prevent redirects
+                // Removed allow-top-navigation to prevent redirects
                 let sandboxFlags = antiFilterMode 
                     ? "allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-popups allow-modals" 
                     : "allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-popups";
